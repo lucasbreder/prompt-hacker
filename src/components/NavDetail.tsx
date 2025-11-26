@@ -46,22 +46,24 @@ export const NavDetail = ({ nav }: { nav: NavItem[] }) => {
         }}
       >
         {showNav && (
-          <div className="flex flex-col justify-between h-[calc(100%-100px)]">
-            <div className="mb-30">
+          <div className="flex flex-col gap-8 justify-between h-[calc(100%-80px)]">
+            <div>
               <Brand />
             </div>
-            <div className="text-primary text-xl mb-5 leading-6">
-              Linguagem e IA Generativa como Campo de Disputa
-            </div>
-            <div className="mb-20 leading-5">
-              Uma análise profunda da competição entre a linguagem natural e a
-              IA generativa, revelando suas complexidades e o futuro da
-              tecnologia.
-              <Link className="text-primary underline ml-2" href={"#"}>
-                DOWNLOAD
-              </Link>
-            </div>
             <div>
+              <div className="text-primary text-xl leading-6 mb-5">
+                Linguagem e IA Generativa como Campo de Disputa
+              </div>
+              <div className="leading-5">
+                Uma análise profunda da competição entre a linguagem natural e a
+                IA generativa, revelando suas complexidades e o futuro da
+                tecnologia.
+                <Link className="text-primary underline ml-2" href={"#"}>
+                  DOWNLOAD
+                </Link>
+              </div>
+            </div>
+            <div className="justify-self-end">
               <Nav2 nav={nav} />
             </div>
           </div>

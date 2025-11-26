@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export const Brand = () => {
   return (
-    <div className="flex flex-col gap-1 relative h-15">
+    <div className="flex flex-col gap-2 relative h-15">
       <Link href={"/"}>
-        <div className="flex gap-1 items-end">
+        <div className="flex gap-1 items-end mb-2">
           <BrandLetter letter="p" time={800} />
           <BrandLetter letter="r" time={1800} />
           <BrandLetter letter="o" time={1500} />
