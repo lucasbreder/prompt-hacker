@@ -23,7 +23,7 @@ export const Page = ({
       <header
         className={`h-full  flex flex-col justify-between p-10 bg-cover bg-fixed bg-black bg-blend-luminosity relative overflow-hidden`}
         style={{
-          backgroundImage: `url(http://localhost:3000${thumbnail || art})`,
+          backgroundImage: `url(${process.env.NEXT_PUBLIC_CMS_URL}${thumbnail || art})`,
         }}
       >
         <div className="bg-linear-to-b from-black/50 to-white w-full h-full mix-blend-multiply absolute top-0 left-0"></div>
@@ -44,7 +44,7 @@ export const Page = ({
             <div className="w-full h-70 relative mb-5">
               <Image
                 className="object-contain"
-                src={`http://localhost:3000${thumbnail || art}`}
+                src={`http://${process.env.NEXT_PUBLIC_CMS_URL}${thumbnail || art}`}
                 fill
                 alt=""
               />

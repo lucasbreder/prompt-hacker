@@ -37,7 +37,7 @@ export const NavDetail = ({ nav }: { nav: NavItem[] }) => {
             bottom-10
             left-5 
             w-[calc(100%-40px)]
-            ${showNav ? "h-[calc(100%-56px)] py-12" : "h-17"}`}
+            ${showNav ? "h-[calc(100%-70px)] py-12" : "h-17"}`}
         onClick={() => {
           setShowNav(true);
         }}
@@ -46,7 +46,7 @@ export const NavDetail = ({ nav }: { nav: NavItem[] }) => {
         }}
       >
         {showNav && (
-          <div className="flex flex-col justify-between h-[calc(100%-80px)]">
+          <div className="flex flex-col justify-between h-[calc(100%-100px)]">
             <div className="mb-30">
               <Brand />
             </div>
