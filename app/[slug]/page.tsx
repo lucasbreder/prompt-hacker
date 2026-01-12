@@ -4,7 +4,7 @@ import { ApiResponse } from "@/src/types/ApiResponse";
 import { GalleryDataItem, GalleryPropsItem } from "@/src/types/Gallery";
 import { PageProps } from "@/src/types/Page";
 import { fetchAPI } from "@/src/utils/util.fetch.api";
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+// import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
 export default async function Home({ params }: { params: { slug: string } }) {
   const { slug } = await params;
@@ -31,7 +31,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
   }
 
   if (pageContent && pageContent.docs.length > 0) {
-    const html = convertLexicalToHTML({ data: pageContent.docs[0].content });
+    const html = pageContent.docs[0].content;
     return (
       <>
         <Page

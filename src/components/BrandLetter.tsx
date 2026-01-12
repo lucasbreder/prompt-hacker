@@ -8,7 +8,7 @@ export const BrandLetter = ({
   quantity = 2,
   delay = 0,
   time = 1000,
-  height = 25,
+  height = 18,
 }: BrandLetterProps) => {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(1);
 

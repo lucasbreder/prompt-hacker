@@ -58,7 +58,7 @@ export const AiChatForm = ({
       }}
     >
       <div
-        className={`w-full flex items-center rounded-lg ${theme === "dark" ? darkTheme : lightTheme}`}
+        className={`w-full flex items-center rounded-4xl ${theme === "dark" ? darkTheme : lightTheme}`}
         style={{
           boxShadow:
             theme === "light"
@@ -69,7 +69,7 @@ export const AiChatForm = ({
         <input
           autoComplete="off"
           name="message"
-          className={`py-2 px-3 rounded-lg flex-1 outline-none`}
+          className={`py-2 px-3 rounded-4xl flex-1 outline-none`}
           type="text"
           placeholder={placeholder}
         />

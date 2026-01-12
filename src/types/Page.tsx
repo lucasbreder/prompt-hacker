@@ -15,7 +15,7 @@ export interface PageData {
   id: number;
   title: string;
   slug: string;
-  content: string;
+  content: SerializedEditorState;
   excerpt: string;
   thumbnail?: string;
   art?: string;
@@ -35,7 +35,7 @@ export interface ArtData {
   id: number;
   title: string;
   slug: string;
-  content: string;
+  content: SerializedEditorState;
   excerpt: string;
   art?: string;
   thumbnail?: string;
