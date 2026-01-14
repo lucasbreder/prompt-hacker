@@ -50,7 +50,7 @@ function OrbScene({ images }: { images: GalleryDataItem[] }) {
             x: (Math.random() - 0.5) * 15, 
             y: (Math.random() - 0.5) * 30, // Espalhado verticalmente para scroll
             z: (Math.random() - 0.5) * 15,
-            scale: 1 + Math.random() * 1.5, // Variação de tamanho das esferas
+            scale: 1 + Math.random() * 1.2, // Variação de tamanho das esferas
         }))
     }, [images])
 
