@@ -1,17 +1,23 @@
-import { AiFeedback } from "./AiFeedback";
-
-export const Footer = ({
+import { ApiResponse } from "../types/ApiResponse";
+import { NavItem } from "../types/Nav";
+import { fetchAPI } from "../utils/util.fetch.api";
+import { NavList } from "./NavList";
+import Image from "next/image";
+export const Footer = async ({
   title,
   excerpt,
 }: {
   title: string;
   excerpt: string;
 }) => {
+    const nav: ApiResponse<NavItem> = await fetchAPI({
+      url: "/nav?where[type][equals]=principal&sort=id",
+      method: "GET",
+    });
   return (
-    <footer className="bg-black p-10 bg-[url('/footer.png')] pt-80 pb-30 bg-contain text-tertiary bg-no-repeat">
-      <AiFeedback
-        message={`Me sugira um novo conteúdo baseado nesse conteúdo: ${title} - ${excerpt}`}
-      />
+    <footer className="pt-10 pb-30 px-4 flex flex-col gap-10 justify-center w-full">
+      <div><NavList nav={nav.docs} variant="list"/></div>
+      <div className="flex justify-center mt-15 -mb-15 w-[300px] sm:w-[400px] h-[100px] relative mx-auto"><Image src="/brand/footer-brand.svg" alt="" fill className="object-contain"/></div>
     </footer>
   );
 };

@@ -40,7 +40,6 @@ export const AiWelcome = ({ message }: { message?: string }) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
-      console.log("foi");
       // Quando o elemento cruza o limite (threshold), atualiza o estado
       if (message) setCurrentUserMessage(message);
     });
@@ -109,7 +108,7 @@ export const AiWelcome = ({ message }: { message?: string }) => {
                 animate={{ opacity: 1, left: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                Digitando ...
+                <span className="loader black"></span>
               </motion.div>
             )}
           </div>

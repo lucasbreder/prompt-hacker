@@ -105,7 +105,7 @@ export const AiFeedback = ({ message }: { message?: string }) => {
                     animate={{ opacity: 1, left: 0 }}
                     transition={{ duration: 0.5 }}
                   >
-                    Digitando ...
+                     <span className="loader"></span>
                   </motion.div>
                 )}
               </div>

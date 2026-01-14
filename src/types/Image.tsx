@@ -12,4 +12,5 @@ export type Image = {
   height: number;
   focalX: number;
   focalY: number;
+  caption?: string;
 };

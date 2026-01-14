@@ -4,8 +4,25 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import localFont from "next/font/local";
 
 const callingCode = localFont({
-  src: "../src/fonts/callingcode-regular-webfont.woff",
-});
+  src: [
+    {
+    path: "../src/fonts/callingcode-regular-webfont.woff",
+    weight: "400",
+    style: "normal",
+  },
+  {
+    path: "../src/fonts/callingcode-bold-webfont.woff",
+    weight: "700",
+    style: "normal",
+  },
+  {
+    path: "../src/fonts/callingcode-italic-webfont.woff",
+    weight: "400",
+    style: "italic",
+  },
+  ]
+}
+);
 
 export default function RootLayout({
   children,

@@ -6,6 +6,7 @@
   --primary: #38F5A0;
   --secondary: #9747ff;
   --tertiary: #959595;
+  --quaternary: #CAFAF9;
 }
 
 @theme inline {
@@ -49,4 +50,110 @@ body {
 
 .chat p {
   margin: 1rem 0;
+}
+
+.article h1, .article h2, .article h3, .article h4, .article h5, .article h6{
+  color: var(--secondary);
+  margin-bottom: 1.2rem;
+}
+
+.article h1 {
+  font-size: 2rem;
+}
+
+.article h2 {
+  font-size: 1.3rem;
+}
+
+.article h3 {
+  font-size: 1.25rem;
+}
+
+.article h4 {
+  font-size: 1rem;
+}
+
+.article h5 {
+  font-size: 0.875rem;
+}
+
+.article h6 {
+  font-size: 0.75rem; 
+}
+
+.article blockquote {
+  background:var(--quaternary);
+  padding: 1rem 1.5rem;
+  line-height: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.article figcaption {
+  background-color: #EDEDED;
+  text-align: center;
+  padding: 1.5rem .8rem;
+  font-size: 14px;
+}
+.article figure {
+  margin: 2.5rem 0 1rem 0;
+}
+
+.loader {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: block;
+  margin:15px auto;
+  position: relative;
+  background: #FFF;
+  box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  box-sizing: border-box;
+  animation: shadowPulse 2s linear infinite;
+}
+.loader.black {
+  animation: shadowPulseBlack 2s linear infinite !important;
+}
+
+@keyframes shadowPulse {
+  33% {
+    background: #FFF;
+    box-shadow: -24px 0 var(--primary), 24px 0 #FFF;
+  }
+  66% {
+    background: var(--primary);
+    box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  }
+  100% {
+    background: #FFF;
+    box-shadow: -24px 0 #FFF, 24px 0 var(--primary);
+  }
+}
+
+@keyframes shadowPulseBlack {
+  33% {
+    background: #9b9a9a;
+    box-shadow: -24px 0 black, 24px 0 #9b9a9a;
+  }
+  66% {
+    background: black;
+    box-shadow: -24px 0 #9b9a9a, 24px 0 #9b9a9a;
+  }
+  100% {
+    background: #9b9a9a;
+    box-shadow: -24px 0 #9b9a9a, 24px 0 black;
+  }
+}
+
+.hide-scroll {
+  /* Firefox */
+  scrollbar-width: none; 
+  /* IE 10+ */
+  -ms-overflow-style: none; 
+}
+
+/* Chrome, Edge, Safari */
+.hide-scroll::-webkit-scrollbar {
+  display: none;
 }

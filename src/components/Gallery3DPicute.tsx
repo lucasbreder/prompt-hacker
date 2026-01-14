@@ -1,23 +1,30 @@
-// https://cydstumpel.nl/
 "use client"
 import { DeviceOrientationControls, Image, ScrollControls, useScroll } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef, useState } from 'react'
 import * as THREE from 'three'
+import { GalleryDataItem } from '../types/Gallery'
+import { useRouter } from 'next/navigation'
 
-export const Gallery3DPicute = () => {
+export const Gallery3DPicute = ({images = []}: {images: GalleryDataItem[]}) => {
+  const arrayPreenchido = Array.from({ length: 20 }, (_, i) => {
+    return images[i % images.length];
+  });
     return (
-         <Canvas style={{overflow: 'hidden'}} camera={{ fov: 10, zoom: 1.5 }}>
-            <ScrollControls pages={4} infinite>
+        <div className="w-full h-full overflow-hidden">
+          <div className='opacity-50 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-multiply'></div>
+           <Canvas camera={{ fov: 10, zoom: 1.5 }}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} enabled pages={4} infinite>
                 <Rig rotation={[0, 0, 0]}>
-                    <Carousel rotation={[0, 0, 0]}/>
+                    <Carousel count={arrayPreenchido.length} images={arrayPreenchido}/>
                 </Rig>
             </ScrollControls>
             <ambientLight intensity={0.1} />
             <directionalLight />
             <DeviceOrientationControls />
         </Canvas>
+        </div>
     )
 }
 // Helper to calculate auto-rotation with initial fast spin that decays
@@ -50,23 +57,24 @@ function Rig(props:any) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.2, count = 20, ...props }:any) {
+function Carousel({ radius = 1.3, count, images, ...props }:{radius?: number, count: number, images: GalleryDataItem[]}) {
   return (
     <group {...props}>
-      {Array.from({ length: count }, (_, i) => (
+      {images.map((image, i) => (
         <Card
           key={i}
-          url={`https://res.cloudinary.com/ddjuftfy2/image/upload/f_webp,c_fill,q_auto/memphis/large/bba3f01c0f7468ee9e643f7b56786360.jpg`}
+          url={image.art.url}
           radius={radius}
           angle={(i / count) * Math.PI * 2}
           rotation={[0, 0, -.8]}
+          slug={image.slug}
         />
       ))}
     </group>
   )
 }
 
-function Card({ url, angle, radius, ...props }:any) {
+function Card({ url, angle, radius, slug, ...props }:any) {
   const ref = useRef<THREE.Mesh>(null)
   const scroll = useScroll()
   const [hovered, hover] = useState(false)
@@ -77,6 +85,7 @@ function Card({ url, angle, radius, ...props }:any) {
 
   const pointerOver = (e:any) => (e.stopPropagation(), hover(true))
   const pointerOut = () => hover(false)
+  const router = useRouter()
   useFrame((state:any, delta:any) => {
     if(ref.current){
         // Animate radius from 0 to target (radius prop) smoothly over ~2 seconds
@@ -89,10 +98,33 @@ function Card({ url, angle, radius, ...props }:any) {
             Math.cos(angle) * data.currentRadius
         )
 
+// Calculate global rotation (same as in Rig but need local access)
+        const globalRotation = (-scroll.offset * (Math.PI * 2)) + getAutoRotation(state.clock.elapsedTime)
+        
+        // Calculate the effective angle of this card in world space
+        // angle is the card's position in the carousel (0 to 2PI)
+        // globalRotation rotates the whole carousel
+        const effectiveAngle = angle + globalRotation
+        
+        // Calculate "depth" based on cosine of effective angle. 
+        // cos(0) = 1 (front), cos(PI) = -1 (back)
+        // We want scale to be max at front, min at back
+        const depth = Math.cos(effectiveAngle)
+        
+        // Base scale .5, vary by some factor
+        // Range of depth is [-1, 1]
+        // Let's say we want scale to go from 0.2 (back) to 0.5 (front)
+        // depth -1 -> 0.2
+        // depth 1 -> 0.5
+        // formula: scale = 0.35 + 0.15 * depth
+        const scale = 0.5 + 0.13 * depth
+
+        ref.current.scale.set(scale, scale, scale)
+
         ref.current.rotation.y = (scroll.offset * (Math.PI * 2)) - getAutoRotation(state.clock.elapsedTime)
     }
   })
   return (
-    <Image ref={ref} url={url} scale={.5} transparent side={THREE.DoubleSide} {...props}/>
+    <Image onClick={() => router.push(`/arte/${slug}`)} ref={ref} url={url} scale={.5} transparent side={THREE.DoubleSide} {...props}/>
   )
 }

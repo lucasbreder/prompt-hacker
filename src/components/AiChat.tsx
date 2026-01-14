@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 export const AiChat = ({
   theme = "dark",
-  placeholder = "Seja Guiado",
+  placeholder = "Alguma pergunta?",
   setShowParent,
 }: {
   theme?: "dark" | "light";
@@ -91,13 +91,15 @@ export const AiChat = ({
   return (
     <>
       <div
-        className={`fixed left-0 transition-all duration-500 ${!showChat ? "-top-[200%]" : "top-0"} w-full h-full bg-white/70 z-50`}
+        className={`fixed left-0 top-0 transition-all duration-500 ${!showChat ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
       >
         <div
-          className={`relative w-[calc(100%-30px)] rounded-3xl  bg-black text-white m-4 h-[calc(100%-80px)]`}
-        >
+          className={`absolute left-0 sm:left-1/2 sm:translate-x-[-50%] ${!showChat ? "bottom-[-200%]" : "bottom-0"} w-full max-w-[980px] h-full rounded-t-3xl bg-gradient-to-b from-black/75 to-black text-white min-h-100 max-h-fit pb-25`}
+        style={{
+          boxShadow: "rgba(255, 255, 255, 0.2) 0px 20px 80px inset",
+        }} >
           <div
-            className="absolute top-5 right-5 w-6 h-6 border rounded-full flex items-center justify-center text-sm"
+            className="absolute top-5 right-5 w-6 h-6 border rounded-full flex items-center justify-center text-sm z-20"
             onClick={() => {
               setShowChat(false);
             }}
@@ -106,7 +108,7 @@ export const AiChat = ({
           </div>
           <div
             ref={chat}
-            className="max-h-[calc(100%-90px)] overflow-auto p-10"
+            className="max-h-[95%] overflow-auto px-4 pt-15 sm:flex sm:flex-col"
           >
             <AnimatePresence>
               {messages.map((item, index) => {
@@ -117,7 +119,7 @@ export const AiChat = ({
                     transition={{ duration: 0.5 }}
                     animate={{ opacity: 1, left: 0 }}
                     exit={{ opacity: 0, left: -10 }}
-                    className={`chat ${item.type === "user" ? "text-secondary" : "text-white"} mb-3 relative`}
+                    className={`sm:max-w-8/12 w-fit chat rounded-t-2xl py-1 px-4 text-black ${item.type !== "robot" ? "bg-white rounded-r-2xl" : "bg-primary rounded-l-2xl"} mb-3 relative`}
                     key={index}
                   >
                     <Markdown>{item.message}</Markdown>
@@ -131,7 +133,7 @@ export const AiChat = ({
                   animate={{ opacity: 1, left: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  Digitando ...
+                  <span className="loader"></span>
                 </motion.div>
               )}
             </AnimatePresence>

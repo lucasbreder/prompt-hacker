@@ -11,3 +11,10 @@ export interface GalleryDataItem {
   art: Image;
   title: string;
 }
+
+export interface GalleryImageItem {
+  slug: string;
+  art: string;
+  title: string;
+}
+

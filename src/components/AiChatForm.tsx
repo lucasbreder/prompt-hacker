@@ -1,7 +1,8 @@
+"use client";
 import Image from "next/image";
-import { Dispatch, Ref, SetStateAction } from "react";
+import { Dispatch, Ref, SetStateAction, useState } from "react";
 import Cookies from "js-cookie";
-
+import { usePathname } from "next/navigation";
 export const AiChatForm = ({
   form,
   theme = "dark",
@@ -27,6 +28,9 @@ export const AiChatForm = ({
   const darkTheme = "bg-transparent";
   const lightTheme = "bg-white text-secondary p-2 mt-4";
   const isGuided = Cookies.get("isGuided");
+  const [formVideoPosition, setFormVideoPosition] = useState(-65);
+  const [placeholderString, setPlaceholderString] = useState(placeholder);
+  const pathname = usePathname();
 
   return (
     <form
@@ -58,7 +62,7 @@ export const AiChatForm = ({
       }}
     >
       <div
-        className={`w-full flex items-center rounded-4xl ${theme === "dark" ? darkTheme : lightTheme}`}
+        className={`relative w-full flex items-center rounded-4xl ${pathname === "/" ? "h-12" : "h-16"} overflow-hidden ${theme === "dark" ? darkTheme : lightTheme}`}
         style={{
           boxShadow:
             theme === "light"
@@ -69,12 +73,23 @@ export const AiChatForm = ({
         <input
           autoComplete="off"
           name="message"
-          className={`py-2 px-3 rounded-4xl flex-1 outline-none`}
+          className={`py-2 px-6 rounded-4xl flex-1 outline-none absolute top-0 left-0 z-10 w-[90%] h-full bg-black/50 text-white placeholder-white`}
           type="text"
-          placeholder={placeholder}
+          placeholder={placeholderString}
+          onFocus={() => {
+            setFormVideoPosition(0);
+            setPlaceholderString("")
+          }}
+          onBlur={() => {
+            setFormVideoPosition(-65);
+            setPlaceholderString("Alguma pergunta?")
+          }}
         />
-        <button className="cursor-pointer">
-          <Image src="/icons/ai.png" width={24} height={18} alt="Menu" />
+        <video className="transition-all duration-200 absolute w-[200%] border-white left-0 -z-0" src="/input.mp4" autoPlay loop muted style={{
+          top: `${formVideoPosition}px`
+        }} />
+        <button className="cursor-pointer absolute top-0 right-0 h-full flex items-center justify-center p-5 z-20">
+          <Image src={formVideoPosition === 0 ? "/icons/ai-send.png" : "/icons/ai.png"} width={30} height={18} alt="Menu" />
         </button>
       </div>
     </form>

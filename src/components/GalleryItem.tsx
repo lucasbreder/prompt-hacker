@@ -3,7 +3,6 @@ import Link from "next/link";
 import { GalleryPropsItem } from "../types/Gallery";
 
 export const GalleryItem = ({ slug, art, title }: GalleryPropsItem) => {
-  console.log(art);
   return (
     <div className="my-10">
       <div className="w-full h-40">
