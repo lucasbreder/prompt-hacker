@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { fetchAPI } from "./src/utils/util.fetch.api"; // Assumindo que este caminho está correto
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   const cookiesScope = await cookies();
