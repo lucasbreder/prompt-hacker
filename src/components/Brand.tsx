@@ -23,7 +23,7 @@ export const Brand = () => {
           <BrandLetter letter="k" time={1700} />
           <BrandLetter letter="e2" time={600} />
           <BrandLetter letter="r3" time={1500} />
-          <div className="text-primary w-[70px] text-[6px] leading-[6px] self-center ml-4">
+          <div className="text-primary w-[70px] text-[6px] leading-[6px] self-center ml-3 -mb-2">
             Linguagem e IA Generativa como Campo de Disputa
           </div>
         </div>
@@ -46,7 +46,7 @@ export const Brand = () => {
           <BrandLetter letter="k" time={1700} height={30}/>
           <BrandLetter letter="e2" time={600} height={30}/>
           <BrandLetter letter="r3" time={1500} height={30}/>
-          <div className="text-primary w-[85px] text-[9px] leading-[9px] self-center ml-4 -mb-2">
+          <div className="text-primary w-[85px] text-[9px] leading-[9px] self-center ml-3 -mb-2">
             Linguagem e IA Generativa como Campo de Disputa
           </div>
         </div>
