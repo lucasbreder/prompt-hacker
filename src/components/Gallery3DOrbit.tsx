@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { GalleryDataItem } from '../types/Gallery'
 import { useRouter } from 'next/navigation'
 
-export const Gallery3DPicute = ({images = []}: {images: GalleryDataItem[]}) => {
+export const Gallery3DOrbit = ({images = []}: {images: GalleryDataItem[]}) => {
   const arrayPreenchido = Array.from({ length: 20 }, (_, i) => {
     return images[i % images.length];
   });
@@ -57,7 +57,7 @@ function Rig(props:any) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.3, count, images, ...props }:{radius?: number, count: number, images: GalleryDataItem[]}) {
+function Carousel({ radius = 1.2, count, images, ...props }:{radius?: number, count: number, images: GalleryDataItem[]}) {
   return (
     <group {...props}>
       {images.map((image, i) => (
