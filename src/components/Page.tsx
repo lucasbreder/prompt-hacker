@@ -65,7 +65,7 @@ export const Page = ({
         
         <div className="max-w-[980px] mx-auto">
 <div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
-          <div className="sm:basis-3/12">
+          <div className="sm:basis-3/12 sm:min-w-[250px]">
            <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
            <p className="text-xl">Por: <span className="font-bold">{author}</span></p>
           </div>
