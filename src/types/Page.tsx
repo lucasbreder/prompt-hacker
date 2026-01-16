@@ -22,6 +22,7 @@ export interface PageData {
   thumbnail?: string;
   nav?: ApiResponse<NavItem>;
   art?: Image;
+  author?: string;
   gallery?: GalleryPropsItem[];
   team?: string;
   showNav?: boolean;  
@@ -34,6 +35,7 @@ export interface ArtProps {
   description: SerializedEditorState<SerializedLexicalNode>;
   excerpt: string;
   art?: Image;
+  author?: string;
   team?: string;
 }
 
@@ -41,6 +43,7 @@ export interface ArtData {
   id: number;
   title: string;
   slug: string;
+  author?: string;
   content: string;
   excerpt: string;
   art?: Image;

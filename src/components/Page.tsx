@@ -16,6 +16,7 @@ export const Page = ({
   excerpt,
   title,
   thumbnail,
+  author,
   art,
   team,
   nav,
@@ -65,6 +66,7 @@ export const Page = ({
         <div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
           <div className="sm:basis-3/12">
            <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
+           <p className="text-xl">Por: <span className="font-bold">{author}</span></p>
           </div>
          <div className="sm:basis-9/12">
            <div className="text-[25px] leading-8 font-bold mb-10">{excerpt}</div>

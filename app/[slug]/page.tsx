@@ -56,6 +56,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
         <Footer
           title={pageContent.docs[0].title}
           excerpt={pageContent.docs[0].excerpt}
+          showNav={true}
         />
       </>
     );

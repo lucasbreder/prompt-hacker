@@ -41,6 +41,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
           title={pageContent.docs[0].title}
           art={pageContent.docs[0]?.art}
           team={pageContent.docs[0]?.team}
+          author={pageContent.docs[0]?.author}
           nav={nav}
           showNav={true}
         />

@@ -6,9 +6,11 @@ import Image from "next/image";
 export const Footer = async ({
   title,
   excerpt,
+  showNav,
 }: {
   title: string;
   excerpt: string;
+  showNav?: boolean;
 }) => {
     const nav: ApiResponse<NavItem> = await fetchAPI({
       url: "/nav?where[type][equals]=principal&sort=id",
@@ -16,6 +18,7 @@ export const Footer = async ({
     });
   return (
     <footer className="pt-10 pb-30 px-4 flex flex-col gap-10 justify-center w-full">
+      {showNav && <div><NavList nav={nav.docs} variant="list"/></div>}
       <div className="flex justify-center mt-15 -mb-15 w-[300px] sm:w-[400px] h-[100px] relative mx-auto"><Image src="/brand/footer-brand.svg" alt="" fill className="object-contain"/></div>
     </footer>
   );
