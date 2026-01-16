@@ -60,6 +60,7 @@ body {
 .article h1, .article h2, .article h3, .article h4, .article h5, .article h6{
   color: var(--secondary);
   margin-bottom: 1.2rem;
+  font-weight: 800;
 }
 
 .article h1 {
@@ -86,13 +87,16 @@ body {
   font-size: 0.75rem; 
 }
 
-.article blockquote {
+.article blockquote, .article-art blockquote {
   background:var(--quaternary);
   padding: 1rem 1.5rem;
   line-height: 1rem;
   margin: 1rem 0;
   font-style: italic;
   font-size: 14px;
+}
+.article-art blockquote {
+  background:rgba(194, 194, 194, 0.2);
 }
 
 .article figcaption {

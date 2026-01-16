@@ -55,7 +55,7 @@ export const Page = ({
           backgroundImage: `url(${thumbnail || art?.url})`,
         }}
       >
-        
+        {!video && <div className="opacity-60 w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
         <div className="bg-linear-to-b from-black/60 to-black/0 w-full h-full mix-blend-multiply absolute top-0 left-0"></div>
         {video && <VideoBackground videoSrc={video} />}
         <Brand />
@@ -70,11 +70,11 @@ export const Page = ({
            <div className="text-[25px] leading-8 font-bold mb-10">{excerpt}</div>
          
          
-          <article className="article" dangerouslySetInnerHTML={{ __html: content }} />
+          <article className={`article ${art ? "article-art" : ""}`} dangerouslySetInnerHTML={{ __html: content }} />
            {art && (
             <>
             
-            <div className="w-full h-70 relative mt-5">
+            {/* <div className="w-full h-70 relative mt-5">
               <Image
                 className="object-cover"
                 src={`${thumbnail || art.url}`}
@@ -82,10 +82,10 @@ export const Page = ({
                 alt=""
               />
             </div>
-            {art.caption && <div className="text-center bg-[#EDEDED] py-5 px-3 text-[14px]">{art.caption}</div>}
+            {art.caption && <div className="text-center bg-[#EDEDED] py-5 px-3 text-[14px]">{art.caption}</div>} */}
             <div className="sm:flex sm:flex-col">
-              <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>
-              <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>
+              {team && <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>}
+              {team && <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>}
               <div className="text-secondary mt-10"><Link href="/"> {"<"} Voltar a Galeria</Link></div>
             </div>
              </>
