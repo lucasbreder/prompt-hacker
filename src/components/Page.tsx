@@ -51,7 +51,7 @@ export const Page = ({
   return (
     <>
       <header
-        className={`h-full flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden`}
+        className={`h-full flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url(${thumbnail || art?.url})`,
         }}
@@ -61,9 +61,10 @@ export const Page = ({
         {video && <VideoBackground videoSrc={video} />}
         <Brand />
       </header>
-      <section className="bg-white sm:px-[20%] pb-50">
+      <section className="bg-white pb-50">
         
-        <div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
+        <div className="max-w-[980px] mx-auto">
+<div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
           <div className="sm:basis-3/12">
            <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
            <p className="text-xl">Por: <span className="font-bold">{author}</span></p>
@@ -101,6 +102,7 @@ export const Page = ({
         {showNav && nav && <div className="relative w-full mt-30 mb-10">
           <NavDetail nav={nav.docs} showChat={false}/>
         </div>}
+        </div>
        
       </section>
     </>

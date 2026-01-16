@@ -107,6 +107,10 @@ body {
 }
 .article figure {
   margin: 2.5rem 0 1rem 0;
+  width: 100%;
+}
+.article figure img {
+  width: 100%;
 }
 
 .loader {
