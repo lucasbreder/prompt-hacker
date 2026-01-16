@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Dispatch, Ref, SetStateAction, useState } from "react";
+import { Dispatch, Ref, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 export const AiChatForm = ({
@@ -11,7 +11,7 @@ export const AiChatForm = ({
   setMessages,
   setShowChat,
 }: {
-  form: Ref<HTMLFormElement>;
+  form: RefObject<HTMLFormElement | null>;
   theme?: string;
   placeholder: string;
   setCurrentUserMessage: Dispatch<SetStateAction<string>>;
@@ -35,7 +35,7 @@ export const AiChatForm = ({
   return (
     <form
       ref={form}
-      className="flex gap-2 w-full justify-between"
+      className={`flex gap-2 ${pathname === "/" ? "w-full" : "fixed bottom-5 left-1/2 translate-x-[-50%] w-[calc(100%-40px)] max-w-[1100px] mx-auto"} justify-between z-40`}
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
@@ -73,7 +73,7 @@ export const AiChatForm = ({
         <input
           autoComplete="off"
           name="message"
-          className={`py-2 px-6 rounded-4xl flex-1 outline-none absolute top-0 left-0 z-10 w-[90%] h-full bg-black/50 text-white placeholder-white`}
+          className={`py-2 px-6 rounded-4xl flex-1 outline-none absolute top-0 left-0 z-10 w-full pr-20 h-full bg-black/50 text-white placeholder-white`}
           type="text"
           placeholder={placeholderString}
           onFocus={() => {

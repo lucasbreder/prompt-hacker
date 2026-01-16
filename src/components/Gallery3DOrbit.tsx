@@ -15,7 +15,7 @@ export const Gallery3DOrbit = ({images = []}: {images: GalleryDataItem[]}) => {
         <div className="w-full h-full overflow-hidden">
           <div className='opacity-50 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-multiply'></div>
            <Canvas camera={{ fov: 10, zoom: 1.5 }}>
-            <ScrollControls style={{scrollbarWidth: 'none'}} enabled pages={4} infinite>
+            <ScrollControls style={{scrollbarWidth: 'none'}} enabled pages={2} infinite>
                 <Rig rotation={[0, 0, 0]}>
                     <Carousel count={arrayPreenchido.length} images={arrayPreenchido}/>
                 </Rig>

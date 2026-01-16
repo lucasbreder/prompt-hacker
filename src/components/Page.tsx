@@ -2,10 +2,9 @@
 import { Brand } from "./Brand";
 import { ArtData, PageData } from "../types/Page";
 import { AiChat } from "./AiChat";
-import { AiWelcome } from "./AiWelcome";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { Gallery } from "./Gallery";
 import { usePathname } from "next/navigation";
 import { videoUrl } from "../utils/util.show.video";
 import { VideoBackground } from "./VídeoBackground";
@@ -22,9 +21,18 @@ export const Page = ({
   team,
   gallery,
 }: PageData | ArtData) => {
-  const isGuided = Cookies.get("isGuided");
   const pathname = usePathname();
   const video = videoUrl(pathname);
+  const [showChatFixed, setShowChatFixed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowChatFixed(window.scrollY > window.innerHeight - 200);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -39,15 +47,10 @@ export const Page = ({
         {video && <VideoBackground videoSrc={video} />}
         <Brand />
       </header>
-      <section className="bg-white sm:px-[20%]">
+      <section className="bg-white sm:px-[20%] pb-50">
         
         <div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
           <div className="sm:basis-3/12">
-             {isGuided && (
-            <AiWelcome
-              message={`Como um guia introduza essa página baseado nesse conteúdo de forma curta: ${title} - ${excerpt}`}
-            />
-          )}
            <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
           </div>
          <div className="sm:basis-9/12">
@@ -77,9 +80,9 @@ export const Page = ({
          </div>
        
         </div>
-           <div className="pt-20 sm:pt-50 pb-30 sm:pb-30 px-4">
-          <AiChat theme="light" />
-          </div>
+       <div className={`pt-20 sm:pt-50 pb-30 sm:pb-30 px-4 fixed bottom-0 left-0 w-full z-40 transition-all duration-500 ${showChatFixed ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+            <AiChat theme="light" />
+           </div>
       </section>
     </>
   );

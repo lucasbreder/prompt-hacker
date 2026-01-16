@@ -5,6 +5,7 @@ import { NavItem } from "../types/Nav";
 import { AiChat } from "./AiChat";
 import { NavList } from "./NavList";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export const NavDetail = ({ nav, variant = "grid", showNavInit = false, showChat = true }: { nav: NavItem[]; variant?: "grid" | "list", showNavInit?: boolean, showChat?: boolean }) => {
   const [showNav, setShowNav] = useState(showNavInit);
@@ -31,15 +32,15 @@ export const NavDetail = ({ nav, variant = "grid", showNavInit = false, showChat
       >
         <Image src="/icons/nav.svg" width={26} height={18} alt="Menu" />
       </div>
-       {showChat && <div className="basis-full sm:basis-3/12"><AiChat theme="light" /></div>}
+       {showChat && <div className="basis-full sm:basis-4/12"><AiChat theme="light" /></div>}
       </div>
       <div onClick={() => setShowNav(false)} className={`transition-all duration-300 w-full h-full bg-black/50 fixed top-0 left-0 z-10 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}></div>
-      <div className={`z-20 bg-gradient-to-b from-black/75 to-black/90 w-full rounded-t-4xl px-4 pb-4 pt-10 fixed bottom-0 border border-white/25 backdrop-blur-lg transition-all duration-300 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}  style={{
+      <div className={`z-40 bg-gradient-to-b from-black/75 to-black/90 w-full sm:w-[1200px] sm:mx-auto rounded-t-4xl px-6 pb-6 sm:p-8 pt-10 fixed bottom-0 border border-white/25 backdrop-blur-lg transition-all duration-300 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}  style={{
           boxShadow: "rgba(255, 255, 255, 0.2) 0px 20px 80px inset",
         }}>
          <div>
           <h2 className="text-[20px] leading-6">Linguagem e IA Generativa como Campo de Disputa</h2>
-          <p className="text-white mt-3 text-[14px]">Uma análise profunda da competição entre a linguagem natural e a IA generativa, revelando suas complexidades e o futuro da tecnologia.</p>
+          <p className="text-white mt-3 text-[14px]">Uma análise profunda da competição entre a linguagem natural e a IA generativa, revelando suas complexidades e o futuro da tecnologia. <br/><Link className="text-primary underline" href="/projeto">{"< "}Leia Mais{" >"}</Link></p>
          </div>
          <NavList nav={nav} variant={variant} setShowNav={setShowNav}/>
         </div>

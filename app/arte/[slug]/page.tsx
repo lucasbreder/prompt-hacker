@@ -37,7 +37,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
           art={pageContent.docs[0]?.art}
           team={pageContent.docs[0]?.team}
         />
-        <div className="relative mb-20 bg-white">
+        <div className="relative mb-20 bg-white sm:max-w-[1200px] sm:mx-auto">
           <NavDetail nav={nav.docs} showChat={false}/>
         </div>
         <Footer

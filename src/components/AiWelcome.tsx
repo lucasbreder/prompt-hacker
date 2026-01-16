@@ -5,7 +5,6 @@ import Markdown from "react-markdown";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 export const AiWelcome = ({ message }: { message?: string }) => {
   const [currentUserMessage, setCurrentUserMessage] = useState("");

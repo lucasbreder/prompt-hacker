@@ -28,9 +28,8 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
             <Environment preset="city" />
             
             {/* Estrelas ao fundo para compor o cenário espacial */}
-            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={4} damping={0.2}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
                 <OrbScene images={orbImages} />
             </ScrollControls>
             

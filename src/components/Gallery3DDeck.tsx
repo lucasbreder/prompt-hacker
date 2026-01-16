@@ -27,7 +27,7 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
            {/* Câmera posicionada um pouco acima e olhando para baixo para dar o efeito de "gaveta de arquivo" */}
            <Canvas camera={{ position: [0, 2, 8], fov: 35 }}>
             {/* Pages controla o tamanho da área de scroll. Quanto maior, mais lento o scroll */}
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={4} damping={0.2}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
                 <Deck images={deckImages} />
             </ScrollControls>
             
@@ -51,7 +51,7 @@ function Deck({ images }: { images: GalleryDataItem[] }) {
         // O offset vai de 0 a 1. Multiplicamos pelo número de imagens para saber qual é o "índice ativo"
         // ex: se temos 30 imagens e scroll está na metade, o target é 15.
         // O damping suaviza esse valor para o movimento ser fluido.
-        const scrollOffset = scroll.offset * (images.length - 1)
+        const scrollOffset = (1 - scroll.offset) * (images.length - 1)
         
         // Movemos o grupo inteiro para frente/trás baseado no scroll
         // Isso faz com que a carta "ativa" venha para perto da câmera (z=0)
@@ -101,7 +101,7 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     // 2. CÁLCULO DE OPACIDADE E VISIBILIDADE (EFEITO FOG)
     // Precisamos saber onde esta carta está em relação ao scroll atual
     // scroll.offset * (total - 1) nos dá o índice flutuante atual (ex: 5.4)
-    const currentScrollIndex = scroll.offset * (total - 1)
+    const currentScrollIndex = (1 - scroll.offset) * (total - 1)
     
     // Distância relativa desta carta para a carta ativa
     const distFromActive = index - currentScrollIndex

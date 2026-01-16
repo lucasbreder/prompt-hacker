@@ -28,7 +28,7 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
             {/* Adiciona fog para que as imagens muito ao fundo desapareçam suavemente */}
             <fog attach="fog" args={['#101010', 5, 25]} />
             
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={5} damping={0.2}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
                 <CloudScene images={cloudImages} />
             </ScrollControls>
             

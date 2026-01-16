@@ -10,7 +10,7 @@ export const Nav = async ({variant}: {variant?: "grid" | "list"}) => {
     method: "GET",
   });
   return (
-    <div className="text-primary flex flex-row gap-6 relative z-20 w-full">
+    <div className="text-primary flex flex-row gap-6 relative z-20 w-full sm:w-[1200px] sm:mx-auto">
       <NavDetail nav={nav.docs} variant={variant} />
     </div>
   );
