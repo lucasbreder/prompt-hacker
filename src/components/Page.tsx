@@ -2,42 +2,55 @@
 import { Brand } from "./Brand";
 import { ArtData, PageData } from "../types/Page";
 import { AiChat } from "./AiChat";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { videoUrl } from "../utils/util.show.video";
 import { VideoBackground } from "./VídeoBackground";
 import Link from "next/link";
+import { NavDetail } from "./NavDetail";
 
 export const Page = ({
-  id,
   content,
   excerpt,
-  slug,
   title,
   thumbnail,
   art,
   team,
-  gallery,
+  nav,
+  showNav
 }: PageData | ArtData) => {
   const pathname = usePathname();
   const video = videoUrl(pathname);
   const [showChatFixed, setShowChatFixed] = useState(false);
+  const [isChatAtBottom, setIsChatAtBottom] = useState(false);
+  const chatContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowChatFixed(window.scrollY > window.innerHeight - 200);
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      
+      // Mostrar chat apenas quando comecar a scrollar
+      setShowChatFixed(scrollY > 0);
+
+      // Mudar para absolute quando chegar na posição do chatContainer (com offset para ser um pouco antes)
+      if (chatContainer.current) {
+        const containerTop = chatContainer.current.getBoundingClientRect().top + scrollY;
+        setIsChatAtBottom(scrollY + windowHeight >= containerTop + 100);
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial position
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
       <header
-        className={`h-full flex flex-col justify-between p-4 bg-cover bg-fixed  bg-blend-luminosity relative overflow-hidden`}
+        className={`h-full flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden`}
         style={{
           backgroundImage: `url(${thumbnail || art?.url})`,
         }}
@@ -73,16 +86,20 @@ export const Page = ({
             <div className="sm:flex sm:flex-col">
               <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>
               <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>
-              <div className="text-secondary mt-10 -mb-20"><Link href="/"> {"<"} Voltar a Galeria</Link></div>
+              <div className="text-secondary mt-10"><Link href="/"> {"<"} Voltar a Galeria</Link></div>
             </div>
              </>
           )}
          </div>
        
         </div>
-       <div className={`pt-20 sm:pt-50 pb-30 sm:pb-30 px-4 fixed bottom-0 left-0 w-full z-40 transition-all duration-500 ${showChatFixed ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-            <AiChat theme="light" />
+        <div ref={chatContainer} className="relative">
+            <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} />
            </div>
+        {showNav && nav && <div className="relative w-full mt-30 mb-10">
+          <NavDetail nav={nav.docs} showChat={false}/>
+        </div>}
+       
       </section>
     </>
   );

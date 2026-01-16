@@ -1,12 +1,17 @@
 import { Footer } from "@/src/components/Footer";
 import { Page } from "@/src/components/Page";
 import { ApiResponse } from "@/src/types/ApiResponse";
-import { ArtData, ArtProps } from "@/src/types/Page";
+import { ArtProps } from "@/src/types/Page";
 import { fetchAPI } from "@/src/utils/util.fetch.api";
 import { converterHTML } from "@/src/utils/util.lexical.converter";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
-import { NavDetail } from "@/src/components/NavDetail";
 import { NavItem } from "@/src/types/Nav";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Prompter Hacker',
+};
+
 
 export default async function Home({ params }: { params: { slug: string } }) {
   const { slug } = await params;
@@ -36,10 +41,10 @@ export default async function Home({ params }: { params: { slug: string } }) {
           title={pageContent.docs[0].title}
           art={pageContent.docs[0]?.art}
           team={pageContent.docs[0]?.team}
+          nav={nav}
+          showNav={true}
         />
-        <div className="relative mb-20 bg-white sm:max-w-[1200px] sm:mx-auto">
-          <NavDetail nav={nav.docs} showChat={false}/>
-        </div>
+
         <Footer
           title={pageContent.docs[0].title}
           excerpt={pageContent.docs[0].excerpt}

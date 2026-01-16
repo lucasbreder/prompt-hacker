@@ -12,11 +12,11 @@ export const NavDetail = ({ nav, variant = "grid", showNavInit = false, showChat
   const pathname = usePathname();
 
   return (
-    <div className="absolute bottom-8 left-0 w-full">
-      <div className={`flex flex-row gap-5 items-center ${pathname === '/' ? "justify-between" : "justify-center"} px-4`}>
+    <div className="w-full">
+      <div className={`flex flex-row gap-5 items-center ${pathname === '/' ? "justify-between" : "justify-center"}`}>
         <div
         className={`
-          mt-3
+          cursor-pointer
           flex
           justify-center
           items-center
@@ -32,10 +32,10 @@ export const NavDetail = ({ nav, variant = "grid", showNavInit = false, showChat
       >
         <Image src="/icons/nav.svg" width={26} height={18} alt="Menu" />
       </div>
-       {showChat && <div className="basis-full sm:basis-4/12"><AiChat theme="light" /></div>}
       </div>
-      <div onClick={() => setShowNav(false)} className={`transition-all duration-300 w-full h-full bg-black/50 fixed top-0 left-0 z-10 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}></div>
-      <div className={`z-40 bg-gradient-to-b from-black/75 to-black/90 w-full sm:w-[1200px] sm:mx-auto rounded-t-4xl px-6 pb-6 sm:p-8 pt-10 fixed bottom-0 border border-white/25 backdrop-blur-lg transition-all duration-300 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}  style={{
+      <div onClick={() => setShowNav(false)} className={`transition-all duration-300 w-full h-full bg-black/50 fixed top-0 left-0 z-10 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}/>
+
+      <div className={`fixed bottom-[-1px] left-1/2 translate-x-[-50%] z-90 bg-gradient-to-b from-black/75 to-black/90 w-full sm:w-[1200px] sm:mx-auto rounded-t-4xl px-6 pb-6 sm:p-8 pt-10 border border-white/25 backdrop-blur-lg transition-all duration-300 ${showNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}  style={{
           boxShadow: "rgba(255, 255, 255, 0.2) 0px 20px 80px inset",
         }}>
          <div>

@@ -35,7 +35,7 @@ export const AiChatForm = ({
   return (
     <form
       ref={form}
-      className={`flex gap-2 ${pathname === "/" ? "w-full" : "fixed bottom-5 left-1/2 translate-x-[-50%] w-[calc(100%-40px)] max-w-[1100px] mx-auto"} justify-between z-40`}
+      className={`flex gap-2 w-full justify-between z-40`}
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
@@ -44,9 +44,9 @@ export const AiChatForm = ({
         setCurrentUserMessage(input.value);
         if (!isGuided) {
           Cookies.set("isGuided", "true", {
-            expires: 7, // Expira em 7 dias (o js-cookie usa dias como padrão)
+            expires: 7,
             path: "/",
-            secure: true, // Recomenda-se para produção
+            secure: true,
           });
         }
 

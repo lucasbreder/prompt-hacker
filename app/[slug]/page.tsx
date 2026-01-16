@@ -6,7 +6,11 @@ import { PageProps } from "@/src/types/Page";
 import { fetchAPI } from "@/src/utils/util.fetch.api";
 import { converterHTML } from "@/src/utils/util.lexical.converter";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: 'Prompter Hacker',
+};
 
 export default async function Home({ params }: { params: { slug: string } }) {
   const { slug } = await params;

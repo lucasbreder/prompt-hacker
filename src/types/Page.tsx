@@ -1,6 +1,8 @@
 import { SerializedEditorState, SerializedLexicalNode } from "@payloadcms/richtext-lexical/lexical";
 import { Image } from "./Image";
 import { GalleryPropsItem } from "./Gallery";
+import { NavItem } from "./Nav";
+import { ApiResponse } from "./ApiResponse";
 
 export interface PageProps {
   id: number;
@@ -18,9 +20,11 @@ export interface PageData {
   content: string;
   excerpt: string;
   thumbnail?: string;
+  nav?: ApiResponse<NavItem>;
   art?: Image;
   gallery?: GalleryPropsItem[];
   team?: string;
+  showNav?: boolean;  
 }
 
 export interface ArtProps {
@@ -40,7 +44,9 @@ export interface ArtData {
   content: string;
   excerpt: string;
   art?: Image;
+  nav?: ApiResponse<NavItem>;
   thumbnail?: string;
   gallery?: GalleryPropsItem[];
   team?: string;
+  showNav?: boolean;  
 }

@@ -1,14 +1,15 @@
 import { Brand } from "@/src/components/Brand";
-import { Gallery3DPentagon } from "@/src/components/Gallery3DPentagon";
-import { Gallery3DOrbit } from "@/src/components/Gallery3DOrbit";
 import { Nav } from "@/src/components/Nav";
 import { ApiResponse } from "@/src/types/ApiResponse";
-import { GalleryDataItem, GalleryImageItem } from "@/src/types/Gallery";
+import { GalleryDataItem } from "@/src/types/Gallery";
 import { fetchAPI } from "@/src/utils/util.fetch.api";
-import { Gallery3DDeck } from "@/src/components/Gallery3DDeck";
-import { Gallery3DFloat } from "@/src/components/Gallery3DFloat";
-import { Gallery3DOrbs } from "@/src/components/Gallery3DOrbs";
 import { ShowRandomGallery } from "@/src/components/ShowRandomGallery";
+import { AiChat } from "@/src/components/AiChat";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Prompter Hacker',
+};
 
 
 
@@ -26,8 +27,9 @@ export default async function Home() {
       <div className="relative z-20 gap-10 p-4 justify-between">
           <Brand />
       </div>
-      <div className="absolute bottom-2 left-0 w-full">
+      <div className="absolute bottom-4 left-1/2 translate-x-[-50%] justify-between w-full flex gap-2 z-20 px-2 max-w-[1200px]">
         <Nav />
+        <AiChat isFloat={false}/>
       </div>
     </div>
   );
