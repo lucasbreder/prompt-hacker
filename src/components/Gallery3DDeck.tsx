@@ -27,7 +27,7 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
            {/* Câmera posicionada um pouco acima e olhando para baixo para dar o efeito de "gaveta de arquivo" */}
            <Canvas camera={{ position: [0, 2, 8], fov: 35 }}>
             {/* Pages controla o tamanho da área de scroll. Quanto maior, mais lento o scroll */}
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={4} damping={0.2}>
                 <Deck images={deckImages} />
             </ScrollControls>
             
