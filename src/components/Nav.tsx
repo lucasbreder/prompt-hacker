@@ -4,9 +4,9 @@ import { NavItem } from "../types/Nav";
 import { fetchAPI } from "../utils/util.fetch.api";
 import { NavDetail } from "./NavDetail";
 
-export const Nav = async ({variant}: {variant?: "grid" | "list"}) => {
+export const Nav = async ({ variant }: { variant?: "grid" | "list" }) => {
   const nav: ApiResponse<NavItem> = await fetchAPI({
-    url: "/nav?where[type][equals]=principal&sort=id",
+    url: "/nav",
     method: "GET",
   });
   return (

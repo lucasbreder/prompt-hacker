@@ -38,10 +38,10 @@ export default async function Home({ params }: { params: { slug: string } }) {
 
   if (pageContent && pageContent.docs.length > 0) {
 
- const html = await convertLexicalToHTML({
-    data: pageContent.docs[0].content,
-    converters: converterHTML,
-  });
+    const html = await convertLexicalToHTML({
+      data: pageContent.docs[0].content,
+      converters: converterHTML,
+    });
     return (
       <>
         <Page

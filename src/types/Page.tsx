@@ -25,7 +25,7 @@ export interface PageData {
   author?: string;
   gallery?: GalleryPropsItem[];
   team?: string;
-  showNav?: boolean;  
+  showNav?: boolean;
 }
 
 export interface ArtProps {
@@ -37,6 +37,12 @@ export interface ArtProps {
   art?: Image;
   author?: string;
   team?: string;
+  year?: number;
+  platform?: string[];
+  axis?: string[];
+  art_process?: Image[];
+  thumbnail?: Image;
+  author_note?: string;
 }
 
 export interface ArtData {
@@ -48,8 +54,13 @@ export interface ArtData {
   excerpt: string;
   art?: Image;
   nav?: ApiResponse<NavItem>;
-  thumbnail?: string;
+  thumbnail?: Image;
   gallery?: GalleryPropsItem[];
   team?: string;
-  showNav?: boolean;  
+  showNav?: boolean;
+  year?: number;
+  platform?: string[];
+  axis?: string[];
+  art_process?: Image[];
+  author_note?: string;
 }

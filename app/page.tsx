@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const galleryContent: ApiResponse<GalleryDataItem> = await fetchAPI({
-        url: `/art`,
-        method: "GET",
-      });
+    url: `/art`,
+    method: "GET",
+  });
 
   return (
     <div className="w-full h-full relative">
@@ -25,11 +25,11 @@ export default async function Home() {
         <ShowRandomGallery galleryContent={galleryContent} />
       </div>
       <div className="relative z-20 gap-10 p-4 justify-between">
-          <Brand />
+        <Brand />
       </div>
-      <div className="absolute bottom-4 left-1/2 translate-x-[-50%] justify-between w-full flex gap-2 z-20 px-2 max-w-[1200px]">
+      <div className="absolute bottom-0 pb-4 left-1/2 translate-x-[-50%] justify-between w-full flex gap-2 z-20 px-2 max-w-[1200px]">
         <Nav />
-        <AiChat isFloat={false}/>
+        <AiChat isFloat={false} />
       </div>
     </div>
   );

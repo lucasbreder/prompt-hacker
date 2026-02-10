@@ -31,6 +31,8 @@ export async function fetchAPI({
   //Pega o resultado
   const result = await response.json();
 
+
+
   //Caso não seja ok, lança um erro
   if (!response.ok) {
     throw new Error(result.message ?? "Network response was not ok");

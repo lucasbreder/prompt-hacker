@@ -32,7 +32,7 @@ export const Page = ({
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-      
+
       // Mostrar chat apenas quando comecar a scrollar
       setShowChatFixed(scrollY > 0);
 
@@ -51,7 +51,7 @@ export const Page = ({
   return (
     <>
       <header
-        className={`h-full flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
+        className={`h-150 flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url(${thumbnail || art?.url})`,
         }}
@@ -62,22 +62,22 @@ export const Page = ({
         <Brand />
       </header>
       <section className="bg-white pb-50">
-        
+
         <div className="max-w-[980px] mx-auto">
-<div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
-          <div className="sm:basis-3/12 sm:min-w-[250px]">
-           <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
-           {author && <p className="text-xl">Por: <span className="font-bold">{author}</span></p>}
-          </div>
-         <div className="sm:basis-9/12">
-           <div className="text-[25px] leading-8 font-bold mb-10">{excerpt}</div>
-         
-         
-          <article className={`article ${art ? "article-art" : ""}`} dangerouslySetInnerHTML={{ __html: content }} />
-           {art && (
-            <>
-            
-            {/* <div className="w-full h-70 relative mt-5">
+          <div className="flex flex-col sm:flex-row gap-10 bg-white py-10 px-5 text-black">
+            <div className="sm:basis-3/12 sm:min-w-[250px]">
+              <h1 className="text-secondary text-[40px] leading-10 font-bold mb-5 ">{title}</h1>
+              {author && <p className="text-xl">Por: <span className="font-bold">{author}</span></p>}
+            </div>
+            <div className="sm:basis-9/12">
+              <div className="text-[25px] leading-8 font-bold mb-10">{excerpt}</div>
+
+
+              <article className={`article ${art ? "article-art" : ""}`} dangerouslySetInnerHTML={{ __html: content }} />
+              {art && (
+                <>
+
+                  {/* <div className="w-full h-70 relative mt-5">
               <Image
                 className="object-cover"
                 src={`${thumbnail || art.url}`}
@@ -86,24 +86,24 @@ export const Page = ({
               />
             </div>
             {art.caption && <div className="text-center bg-[#EDEDED] py-5 px-3 text-[14px]">{art.caption}</div>} */}
-            <div className="sm:flex sm:flex-col">
-              {team && <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>}
-              {team && <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>}
-              <div className="text-secondary mt-10"><Link href="/"> {"<"} Voltar a Galeria</Link></div>
+                  <div className="sm:flex sm:flex-col">
+                    {team && <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>}
+                    {team && <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>}
+                    <div className="text-secondary mt-10"><Link href="/"> {"<"} Voltar a Galeria</Link></div>
+                  </div>
+                </>
+              )}
             </div>
-             </>
-          )}
-         </div>
-       
-        </div>
-        <div ref={chatContainer} className="relative">
+
+          </div>
+          <div ref={chatContainer} className="relative">
             <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} />
-           </div>
-        {showNav && nav && <div className="relative w-full mt-30 mb-10">
-          <NavDetail nav={nav.docs} showChat={false}/>
-        </div>}
+          </div>
+          {showNav && nav && <div className="relative w-full mt-30 mb-10">
+            <NavDetail nav={nav.docs} showChat={false} />
+          </div>}
         </div>
-       
+
       </section>
     </>
   );
