@@ -18,7 +18,7 @@ export const Footer = async ({
   });
   return (
     <footer className="pt-10 pb-30 px-4 flex flex-col gap-10 justify-center w-full">
-      {showNav && <div className="w-fit min-w-[100%] sm:min-w-[70%] mx-auto"><NavList nav={nav.docs} variant="list" /></div>}
+      {showNav && <div className="w-fit min-w-[100%] sm:min-w-[60%] mx-auto"><NavList nav={nav.docs} variant="list" /></div>}
       <div className="flex justify-center mt-15 -mb-15 w-[200px] sm:w-[200px] h-[100px] relative mx-auto"><Image src="/brand/footer-brand.svg" alt="" fill className="object-contain" /></div>
     </footer>
   );
