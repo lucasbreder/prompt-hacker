@@ -1,15 +1,13 @@
 "use client";
-import { Brand } from "./Brand";
-import { ArtData, PageData } from "../types/Page";
+import { ArtData } from "../types/Page";
 import { AiChat } from "./AiChat";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { videoUrl } from "../utils/util.show.video";
 import { VideoBackground } from "./VídeoBackground";
 import Link from "next/link";
-import { NavDetail } from "./NavDetail";
 import Image from "next/image";
-import { NavList } from "./NavList";
+import { Lightbox } from "./Lightbox";
 
 export const PageArt = ({
   content,
@@ -30,6 +28,7 @@ export const PageArt = ({
   const video = videoUrl(pathname);
   const [showChatFixed, setShowChatFixed] = useState(false);
   const [isChatAtBottom, setIsChatAtBottom] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const chatContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,14 +62,14 @@ export const PageArt = ({
         {!video && <div className="opacity-60 w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
         <div className="bg-linear-to-b from-black/60 to-black/0 w-full h-full mix-blend-multiply absolute top-0 left-0"></div>
         {video && <VideoBackground videoSrc={video} />}
-        <Brand />
+
       </header>
       <section className="bg-[#FCF9F7] pb-50">
 
         <div className="max-w-[980px] mx-auto">
           <div className="flex flex-col sm:flex-row gap-10 py-10 px-5 text-black">
-            <div className="sm:basis-5/12 sm:min-w-[250px] bg-white p-7 border border-[#EAEAEA] max-h-fit">
-              <div className="pb-7 border-b border-[#EAEAEA]"><Image src="/brand/brand-art.svg" alt="" width={236} height={64} /></div>
+            <div className="sm:basis-5/12 sm:min-w-[250px] bg-white p-7 border border-[#EAEAEA] max-h-fit sm:sticky top-10 self-start">
+              <div className="pb-7 border-b border-[#EAEAEA]"><Link href="/"><Image src="/brand/brand-art.svg" alt="" width={236} height={64} /></Link></div>
               <h1 className="text-secondary text-left text-[30px] leading-10 font-bold pt-5 mb-2">{title}</h1>
               {year && <div className="font-normal text-[16px] leading-3 mb-5 text-[#AFAFAF]">({year})</div>}
               {author && <div className="text-xl text-[#AFAFAF]">Por <span className="font-bold text-lg pb-3 text-black">{author}</span></div>}
@@ -123,17 +122,36 @@ export const PageArt = ({
           <h3 className="text-secondary text-[25px] leading-10 font-bold pt-5 mb-3 px-5 sm:px-0">Processo</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 px-5 sm:px-0">
 
-            {art_process?.map((item) => (
-              <div key={item.id} className="text-center basis-1/2 text-[14px] relative" style={{ aspectRatio: item.width / item.height }}>
+            {art_process?.map((item, index) => (
+              <div
+                key={item.id}
+                className="text-center basis-1/2 text-[14px] relative cursor-pointer group overflow-hidden"
+                style={{ aspectRatio: item.width / item.height }}
+                onClick={() => setSelectedImageIndex(index)}
+              >
                 <Image
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                   src={item?.url}
                   fill
                   alt=""
                 />
+                {item.caption && (
+                  <div className="absolute inset-0 bg-linear-to-t from-black/85 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+                    <p className="text-white text-sm font-light leading-snug text-center line-clamp-2">
+                      {item.caption}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
+          {selectedImageIndex !== null && art_process && (
+            <Lightbox
+              images={art_process}
+              initialIndex={selectedImageIndex}
+              onClose={() => setSelectedImageIndex(null)}
+            />
+          )}
           {author_note && <div className="text-black bg-primary py-15 px-12 sm:px-30 mt-10 italic text-[20px] rounded-2xl mb-10 mx-5 sm:mx-0 relative">
             <Image className="absolute top-5 left-5" src="/icons/quote.svg" alt="" width={38} height={30} />
             <div className="text-sm font-bold mb-5"> - {author}</div>

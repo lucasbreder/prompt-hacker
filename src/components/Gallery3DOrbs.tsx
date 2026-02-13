@@ -114,7 +114,7 @@ function Orb({ url, slug, position, baseScale, ...props }: any) {
             ref={ref}
             onClick={() => router.push(`/arte/${slug}`)}
             onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
-            onPointerOut={() => { hover(false); document.body.style.cursor = 'auto' }}
+            onPointerOut={() => { hover(false); document.body.style.cursor = 'default' }}
             {...props}
         >
             {/* Geometria Esférica */}

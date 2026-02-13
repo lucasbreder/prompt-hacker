@@ -22,7 +22,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
 
   let gallery: GalleryPropsItem[] = [];
 
-  if (pageContent.docs[0].slug === "galeria") {
+  if (pageContent.docs[0]?.slug === "galeria") {
     const galleryContent: ApiResponse<GalleryDataItem> = await fetchAPI({
       url: `/art`,
       method: "GET",

@@ -153,8 +153,8 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
         rotation={[-0.25, 0, 0]} 
         scale={[1.5, 1]} // Proporção 3:2 (cartão postal)
         onClick={() => router.push(`/arte/${slug}`)}
-        onPointerOver={(e) => (e.stopPropagation(), hover(true))}
-        onPointerOut={() => hover(false)}
+        onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
+        onPointerOut={() => { hover(false); document.body.style.cursor = 'default' }}
         {...props}
     />
   )

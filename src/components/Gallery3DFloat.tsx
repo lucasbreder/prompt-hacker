@@ -124,8 +124,8 @@ function FloatCard({ url, slug, position, baseScale, baseRotation, ...props }: a
             scale={[2, 2.5]} // Tamanho base do cartão
             rotation={[0, 0, baseRotation]} // Rotação aleatória sutil
             onClick={() => router.push(`/arte/${slug}`)}
-            onPointerOver={(e) => (e.stopPropagation(), hover(true))}
-            onPointerOut={() => hover(false)}
+            onPointerOver={(e) => (e.stopPropagation(), hover(true), document.body.style.cursor = 'pointer')}
+            onPointerOut={() => (hover(false), document.body.style.cursor = 'default')}
             {...props}
         />
     </Float>

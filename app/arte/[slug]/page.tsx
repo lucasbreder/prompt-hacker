@@ -21,8 +21,6 @@ export default async function Home({ params }: { params: { slug: string } }) {
     method: "GET",
   });
 
-  console.log(pageContent);
-
   const nav: ApiResponse<NavItem> = await fetchAPI({
     url: "/nav",
     method: "GET",
