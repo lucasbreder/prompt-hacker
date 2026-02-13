@@ -85,7 +85,7 @@ export const AiChatForm = ({
             setPlaceholderString("Alguma pergunta?")
           }}
         />
-        <video className="transition-all duration-200 absolute w-[200%] border-white left-0 z-0 pointer-events-none" src="/input.mp4" autoPlay loop muted style={{
+        <video className="transition-all duration-200 absolute w-[200%] border-white left-0 z-0 pointer-events-none" src="/input.mp4" autoPlay loop muted playsInline style={{
           top: `${formVideoPosition}px`
         }} />
         <button className="cursor-pointer absolute top-0 right-0 h-full flex items-center justify-center p-5 z-20">
