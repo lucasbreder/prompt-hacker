@@ -30,10 +30,10 @@ export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[];
             <div key={index} className={`overflow-hidden sm ${pathname === "/" ? "basis-1/4" : "basis-1/2"}`}>
               <Link onClick={() => {
                 setShowNav?.(false)
-              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-40 sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={item.url}>
+              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-[15dvh] sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={item.url}>
                 {item.label}
                 {video && <video src={video} autoPlay muted loop playsInline className="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none" />}
-                <span className="bg-white text-black rounded-full p-2 w-8 h-8 flex items-center justify-center text-4xl">+</span>
+                <span className="bg-white text-black rounded-full p-2 w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-4xl">+</span>
               </Link>
             </div>
           );
@@ -42,10 +42,10 @@ export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[];
       <div className="flex flex-col items-center gap-2 mt-5 border border-white/20 rounded-2xl p-4 
       relative opacity-100 sm:max-w-[1200px] sm:mx-auto ">
         <div className="flex flex-col items-center gap-2 bg-[url(/nav-bg.png)] bg-linear-to-b from-black/75 to-black/90 bg-blend-multiply bg-cover bg-position-[center_top_20rem] absolute top-0 left-0 w-full h-full -z-10 opacity-10"></div>
-        <p className="text-primary text-[20px]">Participe do projeto</p>
+        <p className="text-primary text-[15px] sm:text-[20px]">Participe do projeto</p>
         <p className="text-white flex flex-col justify-center items-center sm:flex-row gap-2 text-center">
-          <span>Entre em contato via:</span>
-          <span className="flex items-center gap-2">
+          <span className="text-[15px] sm:text-[20px]">Entre em contato via:</span>
+          <span className="flex items-center gap-2 text-[12px] sm:text-[20px]">
             <Link className="flex items-center gap-2" href="#"><Image src="/icons/instagram.svg" width={15} height={15} alt="Instagram" /> @‌xpto</Link> ou
             <Link className="flex items-center gap-2 relative" href="#" onClick={() => handleCopyClipboard("email@email.com")}><Image src="/icons/mail.svg" width={15} height={15} alt="Mail" /> email@email.com<span className={`text-primary absolute -top-5 left-0 bg-black/90 rounded-full px-2 py-1 transition-all duration-300 ${showTooltip ? "opacity-100" : "opacity-0"}`}>e-mail copiado</span></Link>
           </span>

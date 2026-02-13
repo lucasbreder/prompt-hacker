@@ -40,6 +40,7 @@ export interface ArtProps {
   year?: number;
   platform?: string[];
   axis?: string[];
+  art_video?: Image;
   art_process?: Image[];
   thumbnail?: Image;
   author_note?: string;
@@ -61,6 +62,7 @@ export interface ArtData {
   year?: number;
   platform?: string[];
   axis?: string[];
+  art_video?: Image;
   art_process?: Image[];
   author_note?: string;
 }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface LightboxProps {
-  images: { url: string; width: number; height: number; caption?: string }[];
+  images: { url: string; width: number; height: number; caption?: string; mimeType: string }[];
   initialIndex: number;
   onClose: () => void;
 }
@@ -42,7 +42,7 @@ export const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="absolute top-5 right-5 z-[110] text-white hover:text-gray-300 transition-colors p-2"
+          className="absolute top-5 right-5 z-110 text-white hover:text-gray-300 transition-colors p-2"
           onClick={(e) => {
             e.stopPropagation();
             onClose();
@@ -54,7 +54,7 @@ export const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
         {images.length > 1 && (
           <>
             <button
-              className="absolute left-5 z-[110] text-white hover:text-gray-300 transition-colors p-2 bg-white/10 rounded-full backdrop-blur-md"
+              className="absolute left-5 z-110 text-white hover:text-gray-300 transition-colors p-2 bg-white/10 rounded-full backdrop-blur-md"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -63,7 +63,7 @@ export const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <button
-              className="absolute right-5 z-[110] text-white hover:text-gray-300 transition-colors p-2 bg-white/10 rounded-full backdrop-blur-md"
+              className="absolute right-5 z-110 text-white hover:text-gray-300 transition-colors p-2 bg-white/10 rounded-full backdrop-blur-md"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -83,14 +83,28 @@ export const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
           className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none gap-6"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative w-full sm:h-full max-w-5xl max-h-[75vh] pointer-events-auto" style={{aspectRatio:images[currentIndex].width / images[currentIndex].height }}>
-            <Image
-              src={images[currentIndex].url}
-              alt=""
-              fill
-              className="object-contain"
-              priority
-            />
+          <div className="relative w-full sm:h-full max-w-5xl max-h-[75vh] pointer-events-auto" style={{ aspectRatio: images[currentIndex].width / images[currentIndex].height }}>
+            {images[currentIndex].mimeType.startsWith("video/") ? (
+              <video
+                key={images[currentIndex].url}
+                className="w-full h-full object-contain"
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src={images[currentIndex].url} type={images[currentIndex].mimeType} />
+              </video>
+            ) : (
+              <Image
+                src={images[currentIndex].url}
+                alt=""
+                fill
+                className="object-contain"
+                priority
+              />
+            )}
           </div>
           {images[currentIndex].caption && (
             <motion.div

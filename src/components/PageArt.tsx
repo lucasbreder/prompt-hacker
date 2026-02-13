@@ -21,6 +21,7 @@ export const PageArt = ({
   platform,
   axis,
   showNav,
+  art_video,
   art_process,
   author_note
 }: ArtData) => {
@@ -29,6 +30,8 @@ export const PageArt = ({
   const [showChatFixed, setShowChatFixed] = useState(false);
   const [isChatAtBottom, setIsChatAtBottom] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const chatContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -97,25 +100,62 @@ export const PageArt = ({
 
 
               <article className={`article ${art ? "article-art" : ""}`} dangerouslySetInnerHTML={{ __html: content }} />
-              {art && (
-                <>
+              {(art_video || art) && (() => {
+                const mainArt = art_video || art;
+                if (!mainArt) return null;
 
-                  <div className="w-full w-full relative mt-5" style={{ aspectRatio: art.width / art.height }}>
-                    <Image
-                      className="object-cover"
-                      src={art?.url}
-                      fill
-                      alt=""
-                    />
-                  </div>
-                  {art?.caption && <div className="text-center bg-[#EDEDED] py-5 px-3 text-[14px]">{art?.caption}</div>}
-                  <div className="sm:flex sm:flex-col">
-                    {team && <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>}
-                    {team && <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>}
-                    {/* <div className="text-secondary mt-10"><Link href="/"> {"<"} Voltar a Galeria</Link></div> */}
-                  </div>
-                </>
-              )}
+                return (
+                  <>
+                    <div className="w-full relative mt-5" style={{ aspectRatio: mainArt.width / mainArt.height }}>
+                      {art_video ? (
+                        <div className="relative w-full h-full group/main">
+                          <video
+                            ref={videoRef}
+                            className="w-full h-full object-cover"
+                            controls={isPlaying}
+                            playsInline
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            onEnded={() => setIsPlaying(false)}
+                          >
+                            <source src={art_video.url} type={art_video.mimeType} />
+                          </video>
+                          {!isPlaying && (
+                            <div 
+                              className="absolute inset-0 flex items-center justify-center bg-black/20 cursor-pointer transition-colors hover:bg-black/30"
+                              onClick={() => videoRef.current?.play()}
+                            >
+                              <div className="bg-white/90 rounded-full p-6 backdrop-blur-md scale-100 hover:scale-110 transition-transform duration-300 shadow-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="black" className="ml-1">
+                                  <path d="M5 3l14 9-14 9V3z" />
+                                </svg>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        art?.url && (
+                          <Image
+                            className="object-cover"
+                            src={art.url}
+                            fill
+                            alt=""
+                          />
+                        )
+                      )}
+                    </div>
+                    {mainArt.caption && (
+                      <div className="text-center bg-[#EDEDED] py-5 px-3 text-[14px]">
+                        {mainArt.caption}
+                      </div>
+                    )}
+                    <div className="sm:flex sm:flex-col">
+                      {team && <div className="sm:w-5/12 italic font-bold mt-10 text-[14px] sm:self-end">EQUIPE:</div>}
+                      {team && <div className="sm:w-5/12 italic text-[14px] sm:self-end">{team}</div>}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
           </div>
@@ -129,12 +169,33 @@ export const PageArt = ({
                 style={{ aspectRatio: item.width / item.height }}
                 onClick={() => setSelectedImageIndex(index)}
               >
-                <Image
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  src={item?.url}
-                  fill
-                  alt=""
-                />
+                {item.mimeType.startsWith("video/") ? (
+                  <>
+                    <video
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    >
+                      <source src={item?.url} type={item.mimeType} />
+                    </video>
+                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                      <div className="bg-black/50 rounded-full p-3 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" className="ml-0.5">
+                          <path d="M5 3l14 9-14 9V3z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Image
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    src={item?.url}
+                    fill
+                    alt=""
+                  />
+                )}
                 {item.caption && (
                   <div className="absolute inset-0 bg-linear-to-t from-black/85 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
                     <p className="text-white text-sm font-light leading-snug text-center line-clamp-2">
