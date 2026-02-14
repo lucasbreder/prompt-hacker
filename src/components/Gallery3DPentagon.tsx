@@ -1,5 +1,5 @@
 "use client"
-import { DeviceOrientationControls, Image, ScrollControls, useScroll } from '@react-three/drei'
+import { DeviceOrientationControls, Image, ScrollControls, useScroll, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef, useState, useMemo } from 'react'
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DPentagon = ({images = []}: {images: GalleryDataItem[]}) => {
+  const { active } = useProgress()
   const arrayPreenchido = Array.from({ length: 20 }, (_, i) => {
     return images[i % images.length];
   });
@@ -30,6 +31,9 @@ export const Gallery3DPentagon = ({images = []}: {images: GalleryDataItem[]}) =>
             <ambientLight intensity={0.5} />
             <directionalLight position={[0, 0, 5]} />
         </Canvas>
+         {active &&  <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <span className="loader"></span>
+        </div>}
         </div>
     )
 }

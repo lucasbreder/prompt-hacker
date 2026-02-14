@@ -1,5 +1,5 @@
 "use client"
-import { ScrollControls, useScroll, Float, useTexture, Environment, Stars } from '@react-three/drei'
+import { ScrollControls, useScroll, Float, useTexture, Environment, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -8,6 +8,7 @@ import { easing } from 'maath'
 import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
+  const { active } = useProgress()
   const totalItems = 30;
   const arrayPreenchido = Array.from({ length: totalItems }, (_, i) => {
     return images[i % images.length];
@@ -35,6 +36,9 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
             
             <ambientLight intensity={0.2} />
         </Canvas>
+       {active &&  <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <span className="loader"></span>
+        </div>}
         </div>
     )
 }

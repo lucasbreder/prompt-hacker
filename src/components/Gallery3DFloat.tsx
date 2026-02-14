@@ -1,5 +1,5 @@
 "use client"
-import { Image, ScrollControls, useScroll, Float } from '@react-three/drei'
+import { Image, ScrollControls, useScroll, Float, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -8,6 +8,7 @@ import { easing } from 'maath'
 import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
+  const { active } = useProgress()
   // Aumentamos a quantidade de itens repetindo o array para criar uma nuvem densa
   const totalItems = 40;
   const arrayPreenchido = Array.from({ length: totalItems }, (_, i) => {
@@ -34,6 +35,9 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
             
             <ambientLight intensity={1} />
         </Canvas>
+        {active &&  <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <span className="loader"></span>
+        </div>}
         </div>
     )
 }

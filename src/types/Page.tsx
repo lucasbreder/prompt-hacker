@@ -42,6 +42,7 @@ export interface ArtProps {
   axis?: string[];
   art_video?: Image;
   art_process?: Image[];
+  process_layout?: 'grid' | 'vertical' | 'carousel';
   thumbnail?: Image;
   author_note?: string;
 }
@@ -64,5 +65,6 @@ export interface ArtData {
   axis?: string[];
   art_video?: Image;
   art_process?: Image[];
+  process_layout?: 'grid' | 'vertical' | 'carousel';
   author_note?: string;
 }

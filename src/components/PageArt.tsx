@@ -8,6 +8,8 @@ import { VideoBackground } from "./VídeoBackground";
 import Link from "next/link";
 import Image from "next/image";
 import { Lightbox } from "./Lightbox";
+import { ArtProcessItem } from "./ArtProcessItem";
+import { ArtProcessCarousel } from "./ArtProcessCarousel";
 
 export const PageArt = ({
   content,
@@ -23,6 +25,7 @@ export const PageArt = ({
   showNav,
   art_video,
   art_process,
+  process_layout = 'grid',
   author_note
 }: ArtData) => {
   const pathname = usePathname();
@@ -57,7 +60,7 @@ export const PageArt = ({
   return (
     <>
       <header
-        className={`h-150 flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
+        className={`h-150 w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url(${art?.url})`,
         }}
@@ -69,9 +72,9 @@ export const PageArt = ({
       </header>
       <section className="bg-[#FCF9F7] pb-50">
 
-        <div className="max-w-[980px] mx-auto">
-          <div className="flex flex-col sm:flex-row gap-10 py-10 px-5 text-black">
-            <div className="sm:basis-5/12 sm:min-w-[250px] bg-white p-7 border border-[#EAEAEA] max-h-fit sm:sticky top-10 self-start">
+        <div className="max-w-[980px] mx-auto px-5 sm:px-0">
+          <div className="flex flex-col sm:flex-row gap-10 py-10 text-black">
+            <div className="sm:basis-5/12 min-w-full sm:min-w-[250px] bg-white p-7 border border-[#EAEAEA] max-h-fit sm:sticky top-10 self-start">
               <div className="pb-7 border-b border-[#EAEAEA]"><Link href="/"><Image src="/brand/brand-art.svg" alt="" width={236} height={64} /></Link></div>
               <h1 className="text-secondary text-left text-[30px] leading-10 font-bold pt-5 mb-2">{title}</h1>
               {year && <div className="font-normal text-[16px] leading-3 mb-5 text-[#AFAFAF]">({year})</div>}
@@ -159,53 +162,49 @@ export const PageArt = ({
             </div>
 
           </div>
-          <h3 className="text-secondary text-[25px] leading-10 font-bold pt-5 mb-3 px-5 sm:px-0">Processo</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 px-5 sm:px-0">
+          {art_process && art_process.length > 0 && (
+            <>
+              <h3 className="text-secondary text-[25px] leading-10 font-bold pt-5 mb-3 px-5 sm:px-0">
+                Processo 
+              </h3>
+              {process_layout === "grid" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 px-5 sm:px-0">
+                  {art_process.map((item, index) => (
+                    <ArtProcessItem
+                      key={item.id}
+                      item={item}
+                      index={index}
+                      onClick={setSelectedImageIndex}
+                      process_layout="grid"
+                    />
+                  ))}
+                </div>
+              )}
 
-            {art_process?.map((item, index) => (
-              <div
-                key={item.id}
-                className="text-center basis-1/2 text-[14px] relative cursor-pointer group overflow-hidden"
-                style={{ aspectRatio: item.width / item.height }}
-                onClick={() => setSelectedImageIndex(index)}
-              >
-                {item.mimeType.startsWith("video/") ? (
-                  <>
-                    <video
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                    >
-                      <source src={item?.url} type={item.mimeType} />
-                    </video>
-                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                      <div className="bg-black/50 rounded-full p-3 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" className="ml-0.5">
-                          <path d="M5 3l14 9-14 9V3z" />
-                        </svg>
-                      </div>
+              {process_layout === "vertical" && (
+                <div className="flex flex-col gap-8 mb-10 px-5 sm:px-0">
+                  {art_process.map((item, index) => (
+                    <div key={item.id} className="flex flex-col gap-2">
+                       <ArtProcessItem
+                        item={item}
+                        index={index}
+                        onClick={setSelectedImageIndex}
+                        className="w-full"
+                        process_layout="vertical"
+                      />
                     </div>
-                  </>
-                ) : (
-                  <Image
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    src={item?.url}
-                    fill
-                    alt=""
-                  />
-                )}
-                {item.caption && (
-                  <div className="absolute inset-0 bg-linear-to-t from-black/85 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
-                    <p className="text-white text-sm font-light leading-snug text-center line-clamp-2">
-                      {item.caption}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  ))}
+                </div>
+              )}
+
+              {process_layout === "carousel" && (
+                <ArtProcessCarousel 
+                  items={art_process} 
+                  onItemClick={setSelectedImageIndex} 
+                />
+              )}
+            </>
+          )}
           {selectedImageIndex !== null && art_process && (
             <Lightbox
               images={art_process}

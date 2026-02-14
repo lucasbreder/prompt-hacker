@@ -50,6 +50,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
           nav={nav}
           showNav={true}
           art_video={pageContent.docs[0]?.art_video}
+          process_layout={pageContent.docs[0]?.process_layout}
         />
 
         <Footer

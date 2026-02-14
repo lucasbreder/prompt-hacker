@@ -1,5 +1,5 @@
 "use client"
-import { Image, ScrollControls, useScroll } from '@react-three/drei'
+import { Image, ScrollControls, useScroll, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef, useState, useMemo } from 'react'
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
+  const { active } = useProgress()
   // Aumentamos o array para dar a sensação de "pilha infinita" ao scrolar
   const totalItems = 30;
   const arrayPreenchido = Array.from({ length: totalItems }, (_, i) => {
@@ -35,6 +36,9 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
             <ambientLight intensity={0.8} />
             <directionalLight position={[0, 10, 5]} intensity={1} />
         </Canvas>
+         {active &&  <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <span className="loader"></span>
+        </div>}
         </div>
     )
 }
