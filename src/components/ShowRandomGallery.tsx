@@ -7,10 +7,18 @@ import { Gallery3DOrbs } from "./Gallery3DOrbs";
 import { GalleryList } from "./GalleryList";
 import { GalleryDataItem } from "../types/Gallery";
 import { ApiResponse } from "../types/ApiResponse";
+import { useState, useEffect } from "react";
 
 export const ShowRandomGallery = ({galleryContent}:{galleryContent:ApiResponse<GalleryDataItem>}) => {
 
-    const randomNumber = Math.floor(Math.random() * 6) + 1
+    const [randomNumber, setRandomNumber] = useState<number | null>(null)
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setRandomNumber(Math.floor(Math.random() * 6) + 1)
+        }, 5000)
+        return () => clearTimeout(timer)
+    }, [])
 
     return (
         <>
