@@ -20,6 +20,12 @@ export const ShowRandomGallery = ({galleryContent}:{galleryContent:ApiResponse<G
         return () => clearTimeout(timer)
     }, [])
 
+    if (!randomNumber) {
+        return <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
+          <span className="loader"></span>
+        </div>
+    }
+
     return (
         <>
             {randomNumber === 1 && <Gallery3DOrbit images={galleryContent.docs} />}
