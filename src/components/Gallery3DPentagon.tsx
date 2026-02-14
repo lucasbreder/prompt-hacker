@@ -122,7 +122,7 @@ function Card({ url, angle, radius, slug, ...props }:any) {
         side={THREE.DoubleSide} 
         onClick={() => router.push(`/arte/${slug}`)}
         onPointerOver={(e) => {document.body.style.cursor = 'pointer' }}
-        onPointerOut={() => (document.body.style.cursor = 'default')}
+        onPointerOut={() => { document.body.style.cursor = 'default' }}
         {...props}
     />
   )
