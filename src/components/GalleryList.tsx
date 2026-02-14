@@ -27,7 +27,7 @@ export const GalleryList: React.FC<GalleryListProps> = ({ images }) => {
                         animate={{ opacity: 1, scale: 1, rotate: Math.random() * 10 - 5 }}
                         exit={{ opacity: 0, scale: 0.8, rotate: 5 }}
                         transition={{ duration: 0.2 }}
-                        className="w-[300px] h-[400px] bg-gray-600 shadow-2xl overflow-hidden border-4 border-white/10 rounded-sm"
+                        className="w-[300px] h-[400px] bg-gray-600 shadow-2xl overflow-hidden border-4 border-white/10 rounded-sm hidden sm:block"
                         style={{
                              marginLeft: Math.random() * 100 - 50,
                              marginTop: Math.random() * 100 - 50,
