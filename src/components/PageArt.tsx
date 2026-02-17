@@ -60,7 +60,7 @@ export const PageArt = ({
   return (
     <>
       <header
-        className={`h-150 w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
+        className={`h-[80vh] w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url(${art?.url})`,
         }}
@@ -168,7 +168,7 @@ export const PageArt = ({
                 Processo 
               </h3>
               {process_layout === "grid" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 px-5 sm:px-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 sm:px-0">
                   {art_process.map((item, index) => (
                     <ArtProcessItem
                       key={item.id}
@@ -212,7 +212,7 @@ export const PageArt = ({
               onClose={() => setSelectedImageIndex(null)}
             />
           )}
-          {author_note && <div className="text-black bg-primary py-15 px-12 sm:px-30 mt-10 italic text-[20px] rounded-2xl mb-10 mx-5 sm:mx-0 relative">
+          {author_note && <div className="text-black bg-primary py-15 px-12 sm:px-30 mt-10 italic text-[18px] rounded-2xl mb-10 mx-5 sm:mx-0 relative flex flex-col sm:flex-col-reverse">
             <Image className="absolute top-5 left-5" src="/icons/quote.svg" alt="" width={38} height={30} />
             <div className="text-sm font-bold mb-5"> - {author}</div>
             <div>"{author_note}"</div>

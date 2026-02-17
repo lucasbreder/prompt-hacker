@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
     });
     gallery = galleryContent.docs.map((item) => {
       return {
-        art: process.env.NEXT_PUBLIC_CMS_URL + item.art.url,
+        art: process.env.NEXT_PUBLIC_API_URL + item.art.url,
         title: item.title,
         slug: item.slug,
       };

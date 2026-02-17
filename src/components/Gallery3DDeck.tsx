@@ -113,18 +113,18 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     // Lógica visual:
     // Se dist < -1: A carta já passou (saiu da tela pela frente), fica transparente
     // Se dist == 0: É a carta ativa, opacidade 1
-    // Se dist > 5: Está muito lá no fundo, começa a desaparecer (fog)
+    // Se dist > 10: Está muito lá no fundo, começa a desaparecer (fog)
     
     let targetOpacity = 0
-    let targetScale = 1
+    const visibilityRange = 10;
     
     if (distFromActive < -1) {
         // Passou da câmera
         targetOpacity = 0
-    } else if (distFromActive < 5) {
-        // Zona visível (as 5 primeiras cartas)
+    } else if (distFromActive < visibilityRange) {
+        // Zona visível
         // Quanto mais perto do 0, mais opaco.
-        targetOpacity = 1 - (distFromActive / 5) // Degrada suavemente
+        targetOpacity = 1 - (distFromActive / visibilityRange) // Degrada suavemente
         // Pequeno boost de opacidade para a carta ativa
         if(distFromActive < 0.5 && distFromActive > -0.5) targetOpacity = 1; 
     } else {

@@ -18,7 +18,7 @@ export const GalleryList: React.FC<GalleryListProps> = ({ images }) => {
   return (
     <div className="w-full sm:max-w-[1200px] sm:mx-auto h-full  text-[#ededed] flex flex-col font-mono relative overflow-hidden py-20 sm:py-40">
         {/* Floating Image Preview */}
-        <div className="absolute inset-0 pointer-events-none z-30 flex items-center justify-center">
+        <div className="absolute inset-0 pointer-events-none z-30 items-center justify-center hidden sm:flex">
              <AnimatePresence mode="wait">
                 {hoveredIndex !== null && validImages[hoveredIndex] && (
                     <motion.div
