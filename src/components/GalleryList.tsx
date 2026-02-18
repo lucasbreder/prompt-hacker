@@ -11,6 +11,7 @@ interface GalleryListProps {
 
 export const GalleryList: React.FC<GalleryListProps> = ({ images }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Filter out items without art or url if necessary, ensuring we have valid data
   const validImages = images.filter(item => item.art && item.art.url);
@@ -33,13 +34,21 @@ export const GalleryList: React.FC<GalleryListProps> = ({ images }) => {
                              marginTop: Math.random() * 100 - 50,
                         }}
                     >
-                        <Image 
-                            src={validImages[hoveredIndex].art.url} 
-                            alt={validImages[hoveredIndex].title}
-                            className="w-full h-full object-cover"
-                            width={300}
-                            height={400}
-                        />
+                        <div className="relative w-full h-full"> 
+                           {loading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 z-10">
+                                    <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
+                            <Image 
+                                src={validImages[hoveredIndex].art.url} 
+                                alt={validImages[hoveredIndex].title}
+                                className={`w-full h-full object-cover transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'}`}
+                                width={300}
+                                height={400}
+                                onLoad={() => setLoading(false)}
+                            />
+                        </div>
                     </motion.div>
                 )}
              </AnimatePresence>
@@ -53,7 +62,10 @@ export const GalleryList: React.FC<GalleryListProps> = ({ images }) => {
                     href={`/arte/${item.slug}`} 
                     key={item.slug}
                     className="group border-b border-white/20 pb-4 flex items-center justify-between hover:border-white/60 transition-colors"
-                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseEnter={() => {
+                        setHoveredIndex(index);
+                        setLoading(true);
+                    }}
                     onMouseLeave={() => setHoveredIndex(null)}
                 >
                     <span className="text-lg md:text-xl font-medium truncate pr-4 opacity-70 group-hover:opacity-100 transition-opacity">

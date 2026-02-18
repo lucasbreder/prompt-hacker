@@ -17,7 +17,7 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
 
   const deckImages = useMemo(() => {
      if(images.length === 0) return []
-     return arrayPreenchido
+     return arrayPreenchido.reverse()
   }, [images])
 
     return (
@@ -48,14 +48,14 @@ function Deck({ images }: { images: GalleryDataItem[] }) {
     const scroll = useScroll()
 
     // Parâmetros de layout do Deck
-    const gap = 1.2; // Distância entre as cartas no eixo Z
+    const gap = 1.5; // Distância entre as cartas no eixo Z
     const stackHeight = 0.15; // O quanto cada carta sobe no eixo Y (escadinha)
     
     useFrame((state, delta) => {
         // O offset vai de 0 a 1. Multiplicamos pelo número de imagens para saber qual é o "índice ativo"
         // ex: se temos 30 imagens e scroll está na metade, o target é 15.
         // O damping suaviza esse valor para o movimento ser fluido.
-        const scrollOffset = (1 - scroll.offset) * (images.length - 1)
+        const scrollOffset = scroll.offset * (images.length - 1)
         
         // Movemos o grupo inteiro para frente/trás baseado no scroll
         // Isso faz com que a carta "ativa" venha para perto da câmera (z=0)
@@ -105,7 +105,7 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     // 2. CÁLCULO DE OPACIDADE E VISIBILIDADE (EFEITO FOG)
     // Precisamos saber onde esta carta está em relação ao scroll atual
     // scroll.offset * (total - 1) nos dá o índice flutuante atual (ex: 5.4)
-    const currentScrollIndex = (1 - scroll.offset) * (total - 1)
+    const currentScrollIndex = scroll.offset * (total - 1)
     
     // Distância relativa desta carta para a carta ativa
     const distFromActive = index - currentScrollIndex
@@ -116,7 +116,7 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     // Se dist > 10: Está muito lá no fundo, começa a desaparecer (fog)
     
     let targetOpacity = 0
-    const visibilityRange = 10;
+    const visibilityRange = 15;
     
     if (distFromActive < -1) {
         // Passou da câmera

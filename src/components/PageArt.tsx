@@ -60,12 +60,12 @@ export const PageArt = ({
   return (
     <>
       <header
-        className={`h-[80vh] w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
+        className={`h-[60vh] sm:h-[80vh] w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url(${art?.url})`,
         }}
       >
-        {!video && <div className="opacity-60 w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
+        {!video && <div className="opacity-60 bg-contain sm:bg-auto w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
         <div className="bg-linear-to-b from-black/60 to-black/0 w-full h-full mix-blend-multiply absolute top-0 left-0"></div>
         {video && <VideoBackground videoSrc={video} />}
 
@@ -164,7 +164,7 @@ export const PageArt = ({
           </div>
           {art_process && art_process.length > 0 && (
             <>
-              <h3 className="text-secondary text-[25px] leading-10 font-bold pt-5 mb-3 px-5 sm:px-0">
+              <h3 className="text-secondary text-[25px] leading-10 font-bold pt-5 mb-3 sm:px-0">
                 Processo 
               </h3>
               {process_layout === "grid" && (
@@ -182,7 +182,7 @@ export const PageArt = ({
               )}
 
               {process_layout === "vertical" && (
-                <div className="flex flex-col gap-8 mb-10 px-5 sm:px-0">
+                <div className="flex flex-col gap-8 mb-10 sm:px-0">
                   {art_process.map((item, index) => (
                     <div key={item.id} className="flex flex-col gap-2">
                        <ArtProcessItem
@@ -212,9 +212,9 @@ export const PageArt = ({
               onClose={() => setSelectedImageIndex(null)}
             />
           )}
-          {author_note && <div className="text-black bg-primary py-15 px-12 sm:px-30 mt-10 italic text-[18px] rounded-2xl mb-10 mx-5 sm:mx-0 relative flex flex-col sm:flex-col-reverse">
-            <Image className="absolute top-5 left-5" src="/icons/quote.svg" alt="" width={38} height={30} />
-            <div className="text-sm font-bold mb-5"> - {author}</div>
+          {author_note && <div className="text-black bg-primary py-3 sm:py-15 px-7 sm:px-30 mt-10 italic text-[18px] rounded-t-2xl rounded-br-2xl mb-10 sm:mx-0 relative flex flex-col-reverse sm:flex-col">
+            <Image className="absolute top-5 left-5 hidden sm:block" src="/icons/quote.svg" alt="" width={38} height={30} />
+            <div className="text-base sm:text-sm font-bold mt-5 sm:mb-5 pb-3 sm:pb-0"> - {author}</div>
             <div>"{author_note}"</div>
           </div>}
           <div ref={chatContainer} className="relative">
