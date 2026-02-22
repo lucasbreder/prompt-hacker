@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "cms.prompthacker.sudu.dev",
+        hostname: "cms-prompthacker.sudu.dev",
       },
     ],
   },
