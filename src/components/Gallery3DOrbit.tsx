@@ -130,7 +130,7 @@ function Card({ url, angle, radius, slug, ...props }:any) {
     }
   })
   return (
-    <Image onClick={() => router.push(`/arte/${slug}`)} ref={ref} url={url} scale={.5} transparent side={THREE.DoubleSide} {...props} onPointerOver={(e) => (e.stopPropagation(), hover(true), document.body.style.cursor = 'pointer')}
-            onPointerOut={() => (hover(false), document.body.style.cursor = 'default')}/>
+    <Image onClick={(e) => { e.stopPropagation(); router.push(`/arte/${slug}`) }} ref={ref} url={url} scale={.5} transparent side={THREE.DoubleSide} {...props} onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
+            onPointerOut={(e) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}/>
   )
 }

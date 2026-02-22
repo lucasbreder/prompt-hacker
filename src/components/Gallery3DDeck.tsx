@@ -156,9 +156,9 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
         // Inclinação típica de fichário (-15 graus no eixo X)
         rotation={[-0.25, 0, 0]} 
         scale={[1.5, 1]} // Proporção 3:2 (cartão postal)
-        onClick={() => router.push(`/arte/${slug}`)}
+        onClick={(e) => { e.stopPropagation(); router.push(`/arte/${slug}`) }}
         onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
-        onPointerOut={() => { hover(false); document.body.style.cursor = 'default' }}
+        onPointerOut={(e) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}
         {...props}
     />
   )
