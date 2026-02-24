@@ -4,12 +4,14 @@ export async function fetchAPI({
   body,
   dataType = "json",
   isAiApi = false,
+  revalidate = 15,
 }: {
   url: string;
   method?: string;
   dataType?: "json" | "formData";
   body?: any;
   isAiApi?: boolean;
+  revalidate?: number | false;
 }) {
   const headers: Record<string, string> = {};
 
@@ -26,6 +28,7 @@ export async function fetchAPI({
       method,
       headers,
       body: dataType === "json" ? JSON.stringify(body) : body,
+      ...(revalidate !== undefined ? { next: { revalidate } } : {}),
     }
   );
   //Pega o resultado
