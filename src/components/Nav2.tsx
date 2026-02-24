@@ -7,7 +7,7 @@ export const Nav2 = ({ nav }: { nav: NavItem[] }) => {
       {nav?.map((navItem, index) => {
         return (
           <div className="text-xl uppercase" key={index}>
-            <Link href={navItem.url}>{navItem.label}</Link>
+            <Link href={navItem.page?.slug || navItem.link_url}>{navItem.label}</Link>
           </div>
         );
       })}
