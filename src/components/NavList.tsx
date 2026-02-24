@@ -8,6 +8,8 @@ import { useState } from "react";
 
 export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[]; variant?: "grid" | "list"; setShowNav?: (show: boolean) => void }) => {
 
+  console.log(nav);
+
   const pathname = usePathname();
   const [showTooltip, setShowTooltip] = useState(false);
   const handleCopyClipboard = (text: string) => {
@@ -22,15 +24,15 @@ export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[];
     <div className="min-w-full max-w-fit sm:max-w-full mx-auto">
       <div className={`sm:max-w-[1200px] sm:mx-auto ${variant === "grid" ? " grid grid-cols-2 gap-x-5 gap-y-3 mt-4 sm:flex sm:flex-row sm:gap-5" : "flex flex-col sm:flex-row gap-3 mt-4"}`}>
         {nav.map((item, index) => {
-          const video = videoUrl(item.url);
-          if (pathname === item.url && pathname !== "/") {
+          const video = videoUrl(item.page?.slug || item.link_url);
+          if (pathname === item.page?.slug && pathname !== "/") {
             return null;
           }
           return (
             <div key={index} className={`overflow-hidden sm ${pathname === "/" ? "basis-1/4" : "basis-1/2"}`}>
               <Link onClick={() => {
                 setShowNav?.(false)
-              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-[15dvh] sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={item.url}>
+              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-[15dvh] sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={item.page?.slug || item.link_url}>
                 {item.label}
                 {video && <video src={video} autoPlay muted loop playsInline className="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none" />}
                 <span className="bg-white text-black rounded-full p-2 w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-4xl">+</span>

@@ -9,15 +9,17 @@ import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
   const { active } = useProgress()
-  // Aumentamos o array para dar a sensação de "pilha infinita" ao scrolar
-  const totalItems = 30;
-  const arrayPreenchido = Array.from({ length: totalItems }, (_, i) => {
-    return images[i % images.length];
-  });
+  // Loop infinito: repetimos as imagens muitas vezes.
+  // O usuário pode scrollar indefinidamente e as imagens se repetem de forma contínua.
+  const totalItems = 300;
+  // pages é escalado proporcionalmente a totalItems para manter a mesma velocidade de scroll.
+  // Base: pages=4 para 30 itens → pages = 4 * (totalItems / 30)
+  const scrollPages = Math.round(4 * (totalItems / 30));
 
   const deckImages = useMemo(() => {
      if(images.length === 0) return []
-     return arrayPreenchido.reverse()
+     const arr = Array.from({ length: totalItems }, (_, i) => images[i % images.length]);
+     return arr.reverse()
   }, [images])
 
     return (
@@ -28,7 +30,7 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
            {/* Câmera posicionada um pouco acima e olhando para baixo para dar o efeito de "gaveta de arquivo" */}
            <Canvas camera={{ position: [0, 2, 8], fov: 35 }}>
             {/* Pages controla o tamanho da área de scroll. Quanto maior, mais lento o scroll */}
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={4} damping={0.2}>
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={scrollPages} damping={0.2}>
                 <Deck images={deckImages} />
             </ScrollControls>
             
@@ -163,3 +165,5 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     />
   )
 }
+
+//Todo: Loop infinito para galeria de deck, float, planetas

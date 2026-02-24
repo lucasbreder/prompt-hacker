@@ -1,4 +1,8 @@
 export interface NavItem {
   label: string;
-  url: string;
+  link_url: string;
+  page: {
+    id: number;
+    slug: string;
+  };
 }

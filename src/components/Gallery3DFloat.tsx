@@ -9,15 +9,25 @@ import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
   const { active } = useProgress()
-  // Aumentamos a quantidade de itens repetindo o array para criar uma nuvem densa
-  const totalItems = 40;
-  const arrayPreenchido = Array.from({ length: totalItems }, (_, i) => {
-    return images[i % images.length];
-  });
+  
+  // Aumentamos MUITO a quantidade de itens repetindo o array para criar uma nuvem enorme (ilusão de infinito)
+  const totalItems = 400; // 10x mais
+  const baseItems = 40;
+  const scaleFactor = totalItems / baseItems;
+  
+  // A área que as cartas ocupam cresce proporcionalmente para manter a mesma densidade visual
+  const areaHeight = 30 * scaleFactor;
+  // Calculamos quanto o scroll precisa mover a nuvem no Y para a última carta chegar à câmera.
+  // A carta mais baixa está em -areaHeight / 2. O grupo começa em Y = -10.
+  // Mundo inicial Y da carta mais baixa = -areaHeight / 2 - 10.
+  // Para chegar ao 0, o scroll deve deslocar Y em: areaHeight / 2 + 10
+  const yOffsetMax = (areaHeight / 2) + 10;
+  // A quantidade de páginas de scroll baseada no deslocamento (base de 25 unidades de deslocamento = 1 página extra de scroll)
+  const scrollPages = 1 + (yOffsetMax / 25);
 
   const cloudImages = useMemo(() => {
      if(images.length === 0) return []
-     return arrayPreenchido
+     return Array.from({ length: totalItems }, (_, i) => images[i % images.length])
   }, [images])
 
     return (
@@ -29,8 +39,8 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
             {/* Adiciona fog para que as imagens muito ao fundo desapareçam suavemente */}
             <fog attach="fog" args={['#101010', 5, 25]} />
             
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
-                <CloudScene images={cloudImages} />
+            <ScrollControls style={{scrollbarWidth: 'none'}} pages={scrollPages} damping={0.2}>
+                <CloudScene images={cloudImages} areaHeight={areaHeight} yOffsetMax={yOffsetMax} />
             </ScrollControls>
             
             <ambientLight intensity={1} />
@@ -42,7 +52,7 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
     )
 }
 
-function CloudScene({ images }: { images: GalleryDataItem[] }) {
+function CloudScene({ images, areaHeight, yOffsetMax }: { images: GalleryDataItem[], areaHeight: number, yOffsetMax: number }) {
     const scroll = useScroll()
     const groupRef = useRef<THREE.Group>(null)
 
@@ -51,18 +61,18 @@ function CloudScene({ images }: { images: GalleryDataItem[] }) {
     const positions = useMemo(() => {
         return images.map(() => ({
             x: (Math.random() - 0.5) * 12,   // Espalha largura (-6 a 6)
-            y: (Math.random() - 0.5) * 30,   // Espalha altura (-15 a 15) - área de scroll
+            y: (Math.random() - 0.5) * areaHeight, // Espalha altura proporcionalmente à quantidade de itens
             z: (Math.random() - 0.5) * 10,   // Espalha profundidade (-5 a 5)
             scale: 1 + Math.random() * 1.1,  // Variação sutil de tamanho base
             rotation: (Math.random() - 0.5) * 0.3 // Leve rotação inicial
         }))
-    }, [images])
+    }, [images, areaHeight])
 
     useFrame((state, delta) => {
         if (groupRef.current) {
             // O Scroll move a nuvem inteira no eixo Y
-            // O range vai de positivo (topo) a negativo (fundo)
-            const yOffset = scroll.offset * 25 // 25 é a altura navegável
+            // O range aumenta proporcionalmente para suportar mais itens com a mesma velocidade
+            const yOffset = scroll.offset * yOffsetMax
             
             // Movemos o grupo para cima conforme o scroll desce
             easing.damp3(groupRef.current.position, [0, yOffset, 0], 0.5, delta)
@@ -103,15 +113,11 @@ function FloatCard({ url, slug, position, baseScale, baseRotation, ...props }: a
     const targetScale = hovered ? baseScale * 1.2 : baseScale
     easing.damp(ref.current.scale, 'x', targetScale, 0.2, delta)
     easing.damp(ref.current.scale, 'y', targetScale, 0.2, delta)
-    
-    // Animação de opacidade baseada na distância (opcional, reforça profundidade)
-    // Itens muito longe ficam um pouco mais transparentes se desejar
-    // ref.current.material.opacity = ...
   })
 
   return (
     // O componente Float cuida da animação suave de "flutuar"
-    // speed: velocidade da animação
+    // speed: velocidade da animation
     // rotationIntensity: quanto ele gira enquanto flutua
     // floatIntensity: quanto ele sobe e desce/lados
     <Float 
@@ -127,9 +133,9 @@ function FloatCard({ url, slug, position, baseScale, baseRotation, ...props }: a
             side={THREE.DoubleSide}
             scale={[2, 2.5]} // Tamanho base do cartão
             rotation={[0, 0, baseRotation]} // Rotação aleatória sutil
-            onClick={() => router.push(`/arte/${slug}`)}
-            onPointerOver={(e) => (e.stopPropagation(), hover(true), document.body.style.cursor = 'pointer')}
-            onPointerOut={() => (hover(false), document.body.style.cursor = 'default')}
+            onClick={(e: any) => { e.stopPropagation(); router.push(`/arte/${slug}`) }}
+            onPointerOver={(e: any) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
+            onPointerOut={(e: any) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}
             {...props}
         />
     </Float>
