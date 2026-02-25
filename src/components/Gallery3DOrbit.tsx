@@ -1,5 +1,5 @@
 "use client"
-import { DeviceOrientationControls, Image, ScrollControls, useScroll, useProgress } from '@react-three/drei'
+import { DeviceOrientationControls, Image, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef, useState } from 'react'
@@ -12,15 +12,31 @@ export const Gallery3DOrbit = ({images = []}: {images: GalleryDataItem[]}) => {
   const arrayPreenchido = Array.from({ length: 20 }, (_, i) => {
     return images[i % images.length];
   });
+  const sharedYOffset = useRef(0);
+  const targetYOffset = useRef(0);
+  const touchX = useRef(0);
+
+  const handleWheel = (e: React.WheelEvent) => {
+     targetYOffset.current += e.deltaY * 0.001; // Velocidade bem lenta para rotação
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+     touchX.current = e.touches[0].clientX; // Sentido horizontal para Orbit no touch é intuitivo
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+     const deltaX = touchX.current - e.touches[0].clientX;
+     touchX.current = e.touches[0].clientX;
+     targetYOffset.current += deltaX * 0.005; 
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden">
+        <div className="w-full h-full overflow-hidden" onWheel={handleWheel} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
           <div className='opacity-50 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-multiply'></div>
            <Canvas camera={{ fov: 10, zoom: 1.5 }}>
-            <ScrollControls style={{scrollbarWidth: 'none'}} enabled pages={2} infinite>
-                <Rig rotation={[0, 0, 0]}>
-                    <Carousel count={arrayPreenchido.length} images={arrayPreenchido}/>
+                <Rig rotation={[0, 0, 0]} targetYOffset={targetYOffset} sharedYOffset={sharedYOffset}>
+                    <Carousel count={arrayPreenchido.length} images={arrayPreenchido} sharedYOffset={sharedYOffset}/>
                 </Rig>
-            </ScrollControls>
             <ambientLight intensity={0.1} />
             <directionalLight />
             <DeviceOrientationControls />
@@ -43,13 +59,17 @@ const getAutoRotation = (t: number) => {
 }
 
 
-function Rig(props:any) {
+function Rig({ targetYOffset, sharedYOffset, ...props }:any) {
     const ref = useRef<THREE.Group>(null)
-    const scroll = useScroll()
+    const dampState = useRef({ y: 0 })
+
    useFrame((state:any, delta:any) => {
+        easing.damp(dampState.current, 'y', targetYOffset.current, 0.4, delta);
+        sharedYOffset.current = dampState.current.y;
+
    if(ref.current){
-        // Adds a light automatic rotation (state.clock.elapsedTime * 0.1) combined with scroll interaction
-        ref.current.rotation.y = (-scroll.offset * (Math.PI * 2)) + getAutoRotation(state.clock.elapsedTime) // Rotate contents
+        // Adds a light automatic rotation combined with custom scroll interaction
+        ref.current.rotation.y = (-sharedYOffset.current * (Math.PI * 2)) + getAutoRotation(state.clock.elapsedTime) // Rotate contents
         state.events.update() // Raycasts every frame rather than on pointer-move
         easing.damp(state.camera, 'zoom', 1, 2, delta) // Zoom out from 1.5 (set initially)
         state.camera.updateProjectionMatrix()
@@ -62,7 +82,7 @@ function Rig(props:any) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.2, count, images, ...props }:{radius?: number, count: number, images: GalleryDataItem[]}) {
+function Carousel({ radius = 1.2, count, images, sharedYOffset, ...props }:{radius?: number, count: number, images: GalleryDataItem[], sharedYOffset: any}) {
   return (
     <group {...props}>
       {images.map((image, i) => (
@@ -73,15 +93,15 @@ function Carousel({ radius = 1.2, count, images, ...props }:{radius?: number, co
           angle={(i / count) * Math.PI * 2}
           rotation={[0, 0, -.8]}
           slug={image.slug}
+          sharedYOffset={sharedYOffset}
         />
       ))}
     </group>
   )
 }
 
-function Card({ url, angle, radius, slug, ...props }:any) {
+function Card({ url, angle, radius, slug, sharedYOffset, ...props }:any) {
   const ref = useRef<THREE.Mesh>(null)
-  const scroll = useScroll()
   const [hovered, hover] = useState(false)
   
   // Track the current radius for animation. Starts at 0.
@@ -103,8 +123,8 @@ function Card({ url, angle, radius, slug, ...props }:any) {
             Math.cos(angle) * data.currentRadius
         )
 
-// Calculate global rotation (same as in Rig but need local access)
-        const globalRotation = (-scroll.offset * (Math.PI * 2)) + getAutoRotation(state.clock.elapsedTime)
+        // Calculate global rotation (same as in Rig but need local access)
+        const globalRotation = (-sharedYOffset.current * (Math.PI * 2)) + getAutoRotation(state.clock.elapsedTime)
         
         // Calculate the effective angle of this card in world space
         // angle is the card's position in the carousel (0 to 2PI)
@@ -126,7 +146,7 @@ function Card({ url, angle, radius, slug, ...props }:any) {
 
         ref.current.scale.set(scale, scale, scale)
 
-        ref.current.rotation.y = (scroll.offset * (Math.PI * 2)) - getAutoRotation(state.clock.elapsedTime)
+        ref.current.rotation.y = (sharedYOffset.current * (Math.PI * 2)) - getAutoRotation(state.clock.elapsedTime)
     }
   })
   return (

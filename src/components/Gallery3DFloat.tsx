@@ -24,14 +24,27 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
   // Refs de estado de Y para o scroll customizado infinito
   const sharedYOffset = useRef(0);
   const targetYOffset = useRef(0);
+  
+  // Touch Tracking
+  const touchY = useRef(0);
 
   // Interceptador global do mouse wheel sobre a galeria (Igual ao do Orb)
   const handleWheel = (e: React.WheelEvent) => {
      targetYOffset.current += e.deltaY * 0.02; // A mesma velocidade balanceada
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+     touchY.current = e.touches[0].clientY;
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+     const deltaY = touchY.current - e.touches[0].clientY;
+     touchY.current = e.touches[0].clientY;
+     targetYOffset.current += deltaY * 0.05; 
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden bg-[#101010]" onWheel={handleWheel}>
+        <div className="w-full h-full overflow-hidden bg-[#101010]" onWheel={handleWheel} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
           {/* Fundo escuro para destacar a profundidade */}
           <div className='opacity-20 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-overlay'></div>
           

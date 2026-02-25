@@ -22,15 +22,27 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
   // Refs de estado de Y para o scroll customizado (sem bugs de limite Drei)
   const sharedYOffset = useRef(0);
   const targetYOffset = useRef(0);
+  
+  // Touch Tracking
+  const touchY = useRef(0);
 
   // Interceptador global do mouse wheel sobre a galeria
   const handleWheel = (e: React.WheelEvent) => {
-     // Movimenta o alvo inversamente do delta nativo para rolar para baixo carregar mais para cimax
      targetYOffset.current += e.deltaY * 0.02; 
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+     touchY.current = e.touches[0].clientY;
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+     const deltaY = touchY.current - e.touches[0].clientY;
+     touchY.current = e.touches[0].clientY;
+     targetYOffset.current += deltaY * 0.05; 
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden bg-black" onWheel={handleWheel}>
+        <div className="w-full h-full overflow-hidden bg-black" onWheel={handleWheel} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
            <Canvas camera={{ position: [0, 0, 20], fov: 35 }} gl={{ antialias: true }}>
             {/* Fog para profundidade escura */}
             <fog attach="fog" args={['#000000', 10, 35]} />

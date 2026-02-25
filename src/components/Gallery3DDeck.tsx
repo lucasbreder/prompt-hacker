@@ -1,5 +1,5 @@
 "use client"
-import { Image, ScrollControls, useScroll, useProgress } from '@react-three/drei'
+import { Image, useProgress } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef, useState, useMemo } from 'react'
@@ -9,30 +9,39 @@ import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
   const { active } = useProgress()
-  // Loop infinito: repetimos as imagens muitas vezes.
-  // O usuário pode scrollar indefinidamente e as imagens se repetem de forma contínua.
-  const totalItems = 300;
-  // pages é escalado proporcionalmente a totalItems para manter a mesma velocidade de scroll.
-  // Base: pages=4 para 30 itens → pages = 4 * (totalItems / 30)
-  const scrollPages = Math.round(4 * (totalItems / 30));
-
+  
+  // Agora usamos a matemática de wrap contínua, então evitamos estourar memória com 300 items!
   const deckImages = useMemo(() => {
      if(images.length === 0) return []
-     const arr = Array.from({ length: totalItems }, (_, i) => images[i % images.length]);
-     return arr.reverse()
+     return [...images].reverse()
   }, [images])
 
+  const sharedYOffset = useRef(0);
+  const targetYOffset = useRef(0);
+  const touchY = useRef(0);
+
+  const handleWheel = (e: React.WheelEvent) => {
+     targetYOffset.current += e.deltaY * 0.005; 
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+     touchY.current = e.touches[0].clientY;
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+     const deltaY = touchY.current - e.touches[0].clientY;
+     touchY.current = e.touches[0].clientY;
+     targetYOffset.current += deltaY * 0.02; // Ajuste sensibilidade do touch mobile
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden relative bg-black">
+        <div className="w-full h-full overflow-hidden relative bg-black" onWheel={handleWheel} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
           {/* Fundo com padrão */}
           <div className='opacity-30 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-overlay'></div>
           
-           {/* Câmera posicionada um pouco acima e olhando para baixo para dar o efeito de "gaveta de arquivo" */}
+           {/* Câmera posicionada um pouco acima e olhando para baixo */}
            <Canvas camera={{ position: [0, 2, 8], fov: 35 }}>
-            {/* Pages controla o tamanho da área de scroll. Quanto maior, mais lento o scroll */}
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={scrollPages} damping={0.2}>
-                <Deck images={deckImages} />
-            </ScrollControls>
+                <Deck images={deckImages} sharedYOffset={sharedYOffset} targetYOffset={targetYOffset} />
             
             {/* Luzes para dar volume */}
             <ambientLight intensity={0.8} />
@@ -45,32 +54,23 @@ export const Gallery3DDeck = ({images = []}: {images: GalleryDataItem[]}) => {
     )
 }
 
-function Deck({ images }: { images: GalleryDataItem[] }) {
+function Deck({ images, sharedYOffset, targetYOffset }: { images: GalleryDataItem[], sharedYOffset: any, targetYOffset: any }) {
     const ref = useRef<THREE.Group>(null)
-    const scroll = useScroll()
 
     // Parâmetros de layout do Deck
     const gap = 1.5; // Distância entre as cartas no eixo Z
     const stackHeight = 0.15; // O quanto cada carta sobe no eixo Y (escadinha)
     
+    const dampState = useRef({ y: 0 })
+
     useFrame((state, delta) => {
-        // O offset vai de 0 a 1. Multiplicamos pelo número de imagens para saber qual é o "índice ativo"
-        // ex: se temos 30 imagens e scroll está na metade, o target é 15.
-        // O damping suaviza esse valor para o movimento ser fluido.
-        const scrollOffset = scroll.offset * (images.length - 1)
-        
-        // Movemos o grupo inteiro para frente/trás baseado no scroll
-        // Isso faz com que a carta "ativa" venha para perto da câmera (z=0)
-        if(ref.current) {
-             // O grupo move positivamente no Z para trazer as cartas de fundo para frente
-             const targetZ = scrollOffset * gap;
-             const targetY = -(scrollOffset * stackHeight); // Compensa a subida para manter o centro
-             
-             easing.damp3(ref.current.position, [0, targetY, targetZ], 0.3, delta)
-        }
+        // Suaviza o offset global do Deck contínuo
+        easing.damp(dampState.current, 'y', targetYOffset.current, 0.4, delta);
+        sharedYOffset.current = dampState.current.y;
     })
 
     return (
+        // O grupo agora fica estático globalmente! Quem se move dinamicamente em loop numérico são as próprias cartas
         <group ref={ref}>
             {images.map((img, i) => (
                 <Card 
@@ -81,63 +81,55 @@ function Deck({ images }: { images: GalleryDataItem[] }) {
                     gap={gap}
                     stackHeight={stackHeight}
                     total={images.length}
+                    sharedYOffset={sharedYOffset}
                 />
             ))}
         </group>
     )
 }
 
-function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
+function Card({ url, index, slug, gap, stackHeight, total, sharedYOffset, ...props }: any) {
   const ref = useRef<any>(null)
   const router = useRouter()
   const [hovered, hover] = useState(false)
-  const scroll = useScroll()
   
   useFrame((state, delta) => {
     if(!ref.current) return
 
-    // 1. POSICIONAMENTO ESTÁTICO DENTRO DO GRUPO
-    // Cada carta tem sua posição fixa na "fila". O grupo pai é que se move.
+    const scrollOffset = sharedYOffset.current;
+    
+    // MARGIN_FRONT determina quantas cartas passam da câmera antes de "teletransportarem" para o fundo do baralho
+    const MARGIN_FRONT = 4; 
+    
+    // Matemática pura de Loop Infinito (Garante que a distância relativa da carta ativa sempre transite entre [-MARGIN_FRONT, total-MARGIN_FRONT])
+    const distFromActive = ((index - scrollOffset + MARGIN_FRONT) % total + total) % total - MARGIN_FRONT;
+    
+    // 1. POSICIONAMENTO DINÂMICO DE WRAP
     // Z negativo = mais para o fundo. Y positivo = mais para o topo (fichário)
-    const initialZ = -index * gap
-    const initialY = index * stackHeight
+    // Como a distância relativa é perfeitamente contínua, as cartas reciclam sozinhas como uma esteira!
+    const localZ = -distFromActive * gap;
+    const localY = distFromActive * stackHeight;
     
-    ref.current.position.set(0, initialY, initialZ)
-
-    // 2. CÁLCULO DE OPACIDADE E VISIBILIDADE (EFEITO FOG)
-    // Precisamos saber onde esta carta está em relação ao scroll atual
-    // scroll.offset * (total - 1) nos dá o índice flutuante atual (ex: 5.4)
-    const currentScrollIndex = scroll.offset * (total - 1)
-    
-    // Distância relativa desta carta para a carta ativa
-    const distFromActive = index - currentScrollIndex
-    
-    // Lógica visual:
-    // Se dist < -1: A carta já passou (saiu da tela pela frente), fica transparente
-    // Se dist == 0: É a carta ativa, opacidade 1
-    // Se dist > 10: Está muito lá no fundo, começa a desaparecer (fog)
+    ref.current.position.set(0, localY, localZ)
     
     let targetOpacity = 0
-    const visibilityRange = 15;
+    // Distribuímos e desvanecemos o restante para dar a sensação de gaveta profunda
+    const visibilityRange = 20; 
     
     if (distFromActive < -1) {
-        // Passou da câmera
+        // Passou da câmera (caindo fora da tela)
         targetOpacity = 0
     } else if (distFromActive < visibilityRange) {
-        // Zona visível
-        // Quanto mais perto do 0, mais opaco.
-        targetOpacity = 1 - (distFromActive / visibilityRange) // Degrada suavemente
-        // Pequeno boost de opacidade para a carta ativa
+        // Zona visível interativa
+        targetOpacity = 1 - (distFromActive / visibilityRange) 
         if(distFromActive < 0.5 && distFromActive > -0.5) targetOpacity = 1; 
     } else {
-        // Muito longe
+        // Muito longe pro fog
         targetOpacity = 0
     }
 
-    // Clamp da opacidade entre 0 e 1
     targetOpacity = Math.max(0, Math.min(1, targetOpacity))
 
-    // Aplica opacidade suavemente
     easing.damp(ref.current.material, 'opacity', targetOpacity, 0.2, delta)
     
     // Hover effect
@@ -145,7 +137,7 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     easing.damp(ref.current.scale, 'x', hoverScale, 0.5, delta)
     easing.damp(ref.current.scale, 'y', hoverScale, 0.5, delta)
 
-    // Otimização: Se opacidade for quase 0, desliga visibilidade para o renderizador ignorar
+    // Performance skip
     ref.current.visible = ref.current.material.opacity > 0.01
   })
 
@@ -165,5 +157,3 @@ function Card({ url, index, slug, gap, stackHeight, total, ...props }: any) {
     />
   )
 }
-
-//Todo: Loop infinito para galeria de deck, float, planetas
