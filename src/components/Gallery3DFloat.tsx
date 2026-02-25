@@ -10,28 +10,28 @@ import { GalleryDataItem } from '../types/Gallery'
 export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
   const { active } = useProgress()
   
-  // Aumentamos MUITO a quantidade de itens repetindo o array para criar uma nuvem enorme (ilusão de infinito)
-  const totalItems = 400; // 10x mais
-  const baseItems = 40;
-  const scaleFactor = totalItems / baseItems;
+  // A quantidade de itens se mantém para o loop
+  const totalItems = 30; 
   
-  // A área que as cartas ocupam cresce proporcionalmente para manter a mesma densidade visual
-  const areaHeight = 30 * scaleFactor;
-  // Calculamos quanto o scroll precisa mover a nuvem no Y para a última carta chegar à câmera.
-  // A carta mais baixa está em -areaHeight / 2. O grupo começa em Y = -10.
-  // Mundo inicial Y da carta mais baixa = -areaHeight / 2 - 10.
-  // Para chegar ao 0, o scroll deve deslocar Y em: areaHeight / 2 + 10
-  const yOffsetMax = (areaHeight / 2) + 10;
-  // A quantidade de páginas de scroll baseada no deslocamento (base de 25 unidades de deslocamento = 1 página extra de scroll)
-  const scrollPages = 1 + (yOffsetMax / 25);
+  // A área de distribuição (HEIGHT), como no Orb. Aumentada para 120 para espalhar os cards.
+  const areaHeight = 120;
 
   const cloudImages = useMemo(() => {
      if(images.length === 0) return []
      return Array.from({ length: totalItems }, (_, i) => images[i % images.length])
   }, [images])
 
+  // Refs de estado de Y para o scroll customizado infinito
+  const sharedYOffset = useRef(0);
+  const targetYOffset = useRef(0);
+
+  // Interceptador global do mouse wheel sobre a galeria (Igual ao do Orb)
+  const handleWheel = (e: React.WheelEvent) => {
+     targetYOffset.current += e.deltaY * 0.02; // A mesma velocidade balanceada
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden bg-[#101010]">
+        <div className="w-full h-full overflow-hidden bg-[#101010]" onWheel={handleWheel}>
           {/* Fundo escuro para destacar a profundidade */}
           <div className='opacity-20 pointer-events-none w-full h-full absolute top-0 left-0 z-10 bg-[url(/pattern.jpg)] bg-cover sm:bg-contain bg-center mix-blend-overlay'></div>
           
@@ -39,9 +39,7 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
             {/* Adiciona fog para que as imagens muito ao fundo desapareçam suavemente */}
             <fog attach="fog" args={['#101010', 5, 25]} />
             
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={scrollPages} damping={0.2}>
-                <CloudScene images={cloudImages} areaHeight={areaHeight} yOffsetMax={yOffsetMax} />
-            </ScrollControls>
+            <CloudScene images={cloudImages} areaHeight={areaHeight} sharedYOffset={sharedYOffset} targetYOffset={targetYOffset} />
             
             <ambientLight intensity={1} />
         </Canvas>
@@ -52,92 +50,101 @@ export const Gallery3DFloat = ({images = []}: {images: GalleryDataItem[]}) => {
     )
 }
 
-function CloudScene({ images, areaHeight, yOffsetMax }: { images: GalleryDataItem[], areaHeight: number, yOffsetMax: number }) {
-    const scroll = useScroll()
+function CloudScene({ images, areaHeight, sharedYOffset, targetYOffset }: { images: GalleryDataItem[], areaHeight: number, sharedYOffset: any, targetYOffset: any }) {
     const groupRef = useRef<THREE.Group>(null)
 
-    // Pré-calcula posições aleatórias para evitar recálculos a cada render
-    // x: horizontal, y: vertical (altura da nuvem), z: profundidade
+    // Pré-calcula posições aleatórias
     const positions = useMemo(() => {
         return images.map(() => ({
             x: (Math.random() - 0.5) * 12,   // Espalha largura (-6 a 6)
-            y: (Math.random() - 0.5) * areaHeight, // Espalha altura proporcionalmente à quantidade de itens
+            y: (Math.random() - 0.5) * areaHeight, // Espalha altura no ciclo todo
             z: (Math.random() - 0.5) * 10,   // Espalha profundidade (-5 a 5)
-            scale: 1 + Math.random() * 1.1,  // Variação sutil de tamanho base
+            scale: 1 + Math.random() * 0.8,  // Variação de tamanho base sutil
             rotation: (Math.random() - 0.5) * 0.3 // Leve rotação inicial
         }))
     }, [images, areaHeight])
 
+    // Math object state for dampening scroll offset
+    const dampState = useRef({ y: 0 })
+
     useFrame((state, delta) => {
+        // Suaviza a transição do scroll roda do mouse da mesma forma
+        easing.damp(dampState.current, 'y', targetYOffset.current, 0.4, delta);
+        sharedYOffset.current = dampState.current.y;
+
         if (groupRef.current) {
-            // O Scroll move a nuvem inteira no eixo Y
-            // O range aumenta proporcionalmente para suportar mais itens com a mesma velocidade
-            const yOffset = scroll.offset * yOffsetMax
-            
-            // Movemos o grupo para cima conforme o scroll desce
-            easing.damp3(groupRef.current.position, [0, yOffset, 0], 0.5, delta)
-            
-            // Efeito de Parallax do Mouse: move a câmera levemente baseada no mouse
-            // Isso aumenta a sensação de profundidade 3D
+            // Efeito de Parallax do Mouse original mantido e suavizado
             easing.damp3(state.camera.position, [state.pointer.x * 2, state.pointer.y * 2, 15], 0.3, delta)
             state.camera.lookAt(0, 0, 0)
         }
     })
 
     return (
-        // Começamos o grupo mais para baixo (-10) para o scroll subir ele
-        <group ref={groupRef} position={[0, -10, 0]}>
+        <group ref={groupRef}>
             {images.map((img, i) => (
                 <FloatCard 
                     key={i}
                     url={img.art.url}
                     slug={img.slug}
-                    position={[positions[i].x, positions[i].y, positions[i].z]}
+                    initialPosition={[positions[i].x, positions[i].y, positions[i].z]}
                     baseScale={positions[i].scale}
                     baseRotation={positions[i].rotation}
+                    height={areaHeight}
+                    sharedYOffset={sharedYOffset}
                 />
             ))}
         </group>
     )
 }
 
-function FloatCard({ url, slug, position, baseScale, baseRotation, ...props }: any) {
+function FloatCard({ url, slug, initialPosition, baseScale, baseRotation, height, sharedYOffset, ...props }: any) {
   const ref = useRef<any>(null)
+  const imageRef = useRef<any>(null) // Ref para a imagem interna
   const router = useRouter()
   const [hovered, hover] = useState(false)
   
   useFrame((state, delta) => {
-    if(!ref.current) return
+    if(!ref.current || !imageRef.current) return
 
-    // Animação de escala no Hover
+    // Utiliza o Y suave calculado externamente para infinito
+    const yOffset = sharedYOffset.current;
+    // initialPosition[1] => y original
+    const initialY = initialPosition[1]
+    
+    // Matemática pura de wrap loop
+    const halfHeight = height / 2;
+    const wrappedY = ((initialY + yOffset + halfHeight) % height + height) % height - halfHeight;
+    
+    ref.current.position.set(initialPosition[0], wrappedY, initialPosition[2])
+
+    // Animação de escala no Hover (aplicada à imagem interna)
     const targetScale = hovered ? baseScale * 1.2 : baseScale
-    easing.damp(ref.current.scale, 'x', targetScale, 0.2, delta)
-    easing.damp(ref.current.scale, 'y', targetScale, 0.2, delta)
+    easing.damp(imageRef.current.scale, 'x', targetScale * 2, 0.2, delta)
+    easing.damp(imageRef.current.scale, 'y', targetScale * 2.5, 0.2, delta)
   })
 
   return (
-    // O componente Float cuida da animação suave de "flutuar"
-    // speed: velocidade da animation
-    // rotationIntensity: quanto ele gira enquanto flutua
-    // floatIntensity: quanto ele sobe e desce/lados
-    <Float 
-        speed={2} 
-        rotationIntensity={0.5} 
-        floatIntensity={1} 
-        position={position} // A posição base fixa distribuída aleatoriamente
-    >
-        <Image 
-            ref={ref}
-            url={url}
-            transparent
-            side={THREE.DoubleSide}
-            scale={[2, 2.5]} // Tamanho base do cartão
-            rotation={[0, 0, baseRotation]} // Rotação aleatória sutil
-            onClick={(e: any) => { e.stopPropagation(); router.push(`/arte/${slug}`) }}
-            onPointerOver={(e: any) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
-            onPointerOut={(e: any) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}
-            {...props}
-        />
-    </Float>
+    // O grupo base recebe a posição Y infinita (Wrap numérico)
+    <group ref={ref}>
+        {/* O Float aplica o movimento orgânico (Flutuante local) independentemente */}
+        <Float 
+            speed={2} 
+            rotationIntensity={0.5} 
+            floatIntensity={1} 
+        >
+            <Image 
+                ref={imageRef}
+                url={url}
+                transparent
+                side={THREE.DoubleSide}
+                scale={[2, 2.5]} // Tolerancia multiplicada no useFrame
+                rotation={[0, 0, baseRotation]} // Rotação aleatória sutil
+                onClick={(e: any) => { e.stopPropagation(); router.push(`/arte/${slug}`) }}
+                onPointerOver={(e: any) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
+                onPointerOut={(e: any) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}
+                {...props}
+            />
+        </Float>
+    </group>
   )
 }

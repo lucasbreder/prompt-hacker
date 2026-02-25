@@ -19,8 +19,18 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
      return arrayPreenchido
   }, [images])
 
+  // Refs de estado de Y para o scroll customizado (sem bugs de limite Drei)
+  const sharedYOffset = useRef(0);
+  const targetYOffset = useRef(0);
+
+  // Interceptador global do mouse wheel sobre a galeria
+  const handleWheel = (e: React.WheelEvent) => {
+     // Movimenta o alvo inversamente do delta nativo para rolar para baixo carregar mais para cimax
+     targetYOffset.current += e.deltaY * 0.02; 
+  }
+
     return (
-        <div className="w-full h-full overflow-hidden bg-black">
+        <div className="w-full h-full overflow-hidden bg-black" onWheel={handleWheel}>
            <Canvas camera={{ position: [0, 0, 20], fov: 35 }} gl={{ antialias: true }}>
             {/* Fog para profundidade escura */}
             <fog attach="fog" args={['#000000', 10, 35]} />
@@ -28,11 +38,7 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
             {/* Ambiente para reflexos nas esferas (estilo estúdio) */}
             <Environment preset="city" />
             
-            {/* Estrelas ao fundo para compor o cenário espacial */}
-
-            <ScrollControls style={{scrollbarWidth: 'none'}} pages={2} damping={0.2}>
-                <OrbScene images={orbImages} />
-            </ScrollControls>
+            <OrbScene images={orbImages} sharedYOffset={sharedYOffset} targetYOffset={targetYOffset} />
             
             <ambientLight intensity={0.2} />
         </Canvas>
@@ -43,48 +49,54 @@ export const Gallery3DOrbs = ({images = []}: {images: GalleryDataItem[]}) => {
     )
 }
 
-function OrbScene({ images }: { images: GalleryDataItem[] }) {
-    const scroll = useScroll()
+function OrbScene({ images, sharedYOffset, targetYOffset }: { images: GalleryDataItem[], sharedYOffset: any, targetYOffset: any }) {
     const groupRef = useRef<THREE.Group>(null)
+    const HEIGHT = 60; // Altura total para distribuição e loop das esferas
 
-    // Distribuição aleatória no espaço
+    // Distribuição inicial aleatória
     const positions = useMemo(() => {
         return images.map(() => ({
             x: (Math.random() - 0.5) * 15, 
-            y: (Math.random() - 0.5) * 30, // Espalhado verticalmente para scroll
+            y: (Math.random() - 0.5) * HEIGHT, 
             z: (Math.random() - 0.5) * 15,
-            scale: 1 + Math.random() * 1.2, // Variação de tamanho das esferas
+            scale: 1 + Math.random() * 1.2, 
         }))
     }, [images])
 
+    // Math object state for dampening scroll offset
+    const dampState = useRef({ y: 0 })
+
     useFrame((state, delta) => {
+        // Suaviza a transição do scroll roda do mouse!
+        easing.damp(dampState.current, 'y', targetYOffset.current, 0.4, delta);
+        sharedYOffset.current = dampState.current.y;
+
         if (groupRef.current) {
-            // Movimento vertical baseado no scroll
-            const yOffset = scroll.offset * 30
-            easing.damp3(groupRef.current.position, [0, yOffset, 0], 0.5, delta)
-            
             // Rotação suave do grupo inteiro para dinamismo
             groupRef.current.rotation.y += delta * 0.05
         }
     })
 
     return (
-        <group ref={groupRef} position={[0, -10, 0]}>
+        <group ref={groupRef}>
             {images.map((img, i) => (
                 <Orb 
                     key={i}
                     url={img.art.url}
                     slug={img.slug}
-                    position={[positions[i].x, positions[i].y, positions[i].z]}
+                    initialPosition={[positions[i].x, positions[i].y, positions[i].z]}
                     baseScale={positions[i].scale}
+                    height={HEIGHT}
+                    sharedYOffset={sharedYOffset}
                 />
             ))}
         </group>
     )
 }
 
-function Orb({ url, slug, position, baseScale, ...props }: any) {
-  const ref = useRef<THREE.Mesh>(null)
+function Orb({ url, slug, initialPosition, baseScale, height, sharedYOffset, ...props }: any) {
+  const ref = useRef<THREE.Group>(null)
+  const meshRef = useRef<THREE.Mesh>(null)
   const router = useRouter()
   const [hovered, hover] = useState(false)
   
@@ -92,46 +104,54 @@ function Orb({ url, slug, position, baseScale, ...props }: any) {
   const texture = useTexture(url)
 
   useFrame((state, delta) => {
-    if(!ref.current) return
+    if(!ref.current || !meshRef.current) return
 
-    // 1. Animação de Hover (Escala)
+    // Utiliza o Y suave deslocado (Scroll infinito puro numérico!)
+    const yOffset = sharedYOffset.current;
+    const initialY = initialPosition[1]
+    
+    // Mantém a esfera de volta no final do grupo (wrap) super seguro
+    // Sem % maliciosos sobre decimais curtos de offset
+    const halfHeight = height / 2;
+    const wrappedY = ((initialY + yOffset + halfHeight) % height + height) % height - halfHeight;
+    
+    ref.current.position.set(initialPosition[0], wrappedY, initialPosition[2])
+
+    // 1. Animação de Hover (Escala). O easing é aplicado ao mesh interno.
     const targetScale = hovered ? baseScale * 1.3 : baseScale
-    easing.damp(ref.current.scale, 'x', targetScale, 0.3, delta)
-    easing.damp(ref.current.scale, 'y', targetScale, 0.3, delta)
-    easing.damp(ref.current.scale, 'z', targetScale, 0.3, delta)
+    easing.damp3(meshRef.current.scale, [targetScale, targetScale, targetScale], 0.3, delta)
     
     // 2. Rotação Constante (Planeta girando)
-    // Se estiver em hover, gira mais rápido
     const rotationSpeed = hovered ? 0.8 : 0.2
-    ref.current.rotation.y += delta * rotationSpeed
-    ref.current.rotation.x += delta * (rotationSpeed * 0.5)
+    meshRef.current.rotation.y += delta * rotationSpeed
+    meshRef.current.rotation.x += delta * (rotationSpeed * 0.5)
   })
 
   return (
-    <Float 
-        speed={1.5} 
-        rotationIntensity={1} 
-        floatIntensity={2} 
-        position={position}
-    >
-        <mesh 
-            ref={ref}
-            onClick={() => router.push(`/arte/${slug}`)}
-            onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
-            onPointerOut={() => { hover(false); document.body.style.cursor = 'default' }}
-            {...props}
+    <group ref={ref} {...props}>
+        <Float 
+            speed={1.5} 
+            rotationIntensity={1} 
+            floatIntensity={2} 
         >
-            {/* Geometria Esférica */}
-            <sphereGeometry args={[1, 64, 64]} />
-            
-            {/* Material Físico para aparência de "Bola de Gude" ou Planeta */}
-            <meshStandardMaterial 
-                map={texture as any} 
-                roughness={0.2} // Pouca rugosidade para brilhar
-                metalness={0.1} 
-                envMapIntensity={1} // Intensidade do reflexo do ambiente
-            />
-        </mesh>
-    </Float>
+            <mesh 
+                ref={meshRef}
+                onClick={() => router.push(`/arte/${slug}`)}
+                onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
+                onPointerOut={() => { hover(false); document.body.style.cursor = 'default' }}
+            >
+                {/* Geometria Esférica */}
+                <sphereGeometry args={[1, 64, 64]} />
+                
+                {/* Material Físico para aparência de "Bola de Gude" ou Planeta */}
+                <meshStandardMaterial 
+                    map={texture as any} 
+                    roughness={0.2} // Pouca rugosidade para brilhar
+                    metalness={0.1} 
+                    envMapIntensity={1} // Intensidade do reflexo do ambiente
+                />
+            </mesh>
+        </Float>
+    </group>
   )
 }
