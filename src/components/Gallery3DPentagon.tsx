@@ -9,15 +9,16 @@ import { GalleryDataItem } from '../types/Gallery'
 
 export const Gallery3DPentagon = ({images = []}: {images: GalleryDataItem[]}) => {
   const { active } = useProgress()
-  const arrayPreenchido = Array.from({ length: 20 }, (_, i) => {
-    return images[i % images.length];
-  });
 
-  const pentagonImages = useMemo(() => {
+  const circleImages = useMemo(() => {
      if(images.length === 0) return []
-     const shuffled = [...arrayPreenchido].sort(() => 0.5 - Math.random());
-     return shuffled.slice(0, 5); 
+     return [...images].sort(() => 0.5 - Math.random());
   }, [images])
+
+  const dynamicRadius = useMemo(() => {
+    // 5 images -> 0.5 radius, 10 images -> 1.0 radius, so images don't overlap when adding more
+    return Math.max(0.5, circleImages.length * 0.1);
+  }, [circleImages.length]);
 
     return (
         <div className="w-full h-full overflow-hidden">
@@ -25,7 +26,7 @@ export const Gallery3DPentagon = ({images = []}: {images: GalleryDataItem[]}) =>
            <Canvas camera={{ position: [0, 0, 10], fov: 15 }}> 
             <ScrollControls style={{scrollbarWidth: 'none'}} enabled pages={4} infinite>
                 <Rig>
-                    <Carousel radius={.5} count={pentagonImages.length} images={pentagonImages}/>
+                    <Carousel radius={dynamicRadius} count={circleImages.length} images={circleImages}/>
                 </Rig>
             </ScrollControls>
             <ambientLight intensity={0.5} />
