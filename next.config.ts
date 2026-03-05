@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cms-prompthacker.sudu.dev",
       },
+      {
+        protocol: "https",
+        hostname: "cms.prompterhacker.io",
+      },
     ],
   },
 };
