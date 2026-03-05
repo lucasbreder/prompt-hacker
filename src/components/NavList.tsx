@@ -31,7 +31,7 @@ export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[];
             <div key={index} className={`overflow-hidden sm ${pathname === "/" ? "basis-1/4" : "basis-1/2"}`}>
               <Link onClick={() => {
                 setShowNav?.(false)
-              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-[15dvh] sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={item.page?.slug || item.link_url || '#'}>
+              }} className={`overflow-hidden relative text-primary flex rounded-2xl border border-white/25 justify-between bg-linear-to-b  p-4 ${variant === "grid" ? "h-[15dvh] sm:h-60 from-20% from-black to-black/0" : "h-85 from-black from-5% via-black via-20% to-black/0"}`} href={`/${item.page?.slug || item.link_url || '#'}`}>
                 {item.label}
                 {video && <video src={video} autoPlay muted loop playsInline className="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none" />}
                 <span className="bg-white text-black rounded-full p-2 w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-4xl">+</span>
