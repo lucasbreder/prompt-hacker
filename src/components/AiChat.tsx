@@ -116,7 +116,7 @@ export const AiChat = ({
           </div>}
         <div className="w-full h-full flex">
            <AiMessages messages={messages} showChat={showChat} chat={chat} handleLinkClick={handleLinkClick} iaResponse={iaResponse} />
-          <AiInteractions totalInteractions={totalInteractions} showChat={showChat} />
+          <AiInteractions showChat={showChat} />
         </div>
           {(isFloat || showChat) && <div className={`px-5 pb-5 absolute bottom-5 left-1/2 translate-x-[-50%] w-full pointer-events-auto transition-all duration-500 ${isFixed || showChat ? "opacity-100" : "opacity-0"}`}>
             <AiChatForm
