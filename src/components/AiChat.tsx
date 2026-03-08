@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { AiInteractions } from "./AiInteractions";
 import { AiMessages } from "./AiMessages";
+import { useGetInteractions } from "../hooks/getInteractions";
 
 export const AiChat = ({
   theme = "dark",
@@ -40,7 +41,7 @@ export const AiChat = ({
   const chat = useRef<HTMLDivElement>(null);
   const iaResponse = useGetOpenAPI(currentUserMessage);
   const router = useRouter();
-  const [totalInteractions, setTotalInteractions] = useState(1470);
+  const interactions = useGetInteractions()
 
   const handleLinkClick = useCallback(
     (event: any) => {
@@ -74,7 +75,7 @@ export const AiChat = ({
         );
 
         if (hasRobotResponse) return prev;
-
+        interactions.refetch()
         return [
           ...prev,
           {
@@ -88,7 +89,17 @@ export const AiChat = ({
 
   useEffect(() => {
     if (form.current) form.current.reset();
-    if (chat.current) chat.current.scrollTop = chat.current.scrollHeight;
+    if (chat.current) {
+      const lastChild = chat.current.lastElementChild as HTMLElement | null;
+      if (lastChild) {
+        chat.current.scrollTo({
+          top: lastChild.offsetTop - 40,
+          behavior: "smooth"
+        });
+      } else {
+        chat.current.scrollTop = chat.current.scrollHeight;
+      }
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -101,11 +112,11 @@ export const AiChat = ({
         className={`fixed left-0 top-0 transition-all duration-500 w-full ${(!showChat) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
       />
        <div
-          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] h-[90%] rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} pb-30 max-h-fit transition-all duration-500 overflow-hidden`}
+          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] h-[90%] rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} max-h-fit transition-all duration-500 overflow-hidden`}
         style={{
           boxShadow: showChat ? "rgba(255, 255, 255, 0.2) 0px 20px 80px inset" : "",
         }} >
-         <div>
+         <div className="h-full">
            {showChat && <div
             className="cursor-pointer absolute top-5 right-5 w-6 h-6 rounded-full flex items-center justify-center text-sm bg-primary text-black z-20"
             onClick={() => {
@@ -114,9 +125,9 @@ export const AiChat = ({
           >
             x
           </div>}
-        <div className="w-full h-full flex">
+        <div className="w-full flex h-[80%]">
            <AiMessages messages={messages} showChat={showChat} chat={chat} handleLinkClick={handleLinkClick} iaResponse={iaResponse} />
-          <AiInteractions showChat={showChat} />
+          <AiInteractions interactions={interactions} showChat={showChat} />
         </div>
           {(isFloat || showChat) && <div className={`px-5 pb-5 absolute bottom-5 left-1/2 translate-x-[-50%] w-full pointer-events-auto transition-all duration-500 ${isFixed || showChat ? "opacity-100" : "opacity-0"}`}>
             <AiChatForm

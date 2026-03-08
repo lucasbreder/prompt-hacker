@@ -1,24 +1,15 @@
 import Image from "next/image"
 import { useMemo, useState } from "react"
 import { useGetInteractions } from "../hooks/getInteractions"
+import { UseQueryResult } from "@tanstack/react-query"
+import { AnimatePresence, motion } from "motion/react"
 
-export const AiInteractions = ({showChat}: {showChat: boolean}) => {
+export const AiInteractions = ({interactions, showChat}: {interactions: UseQueryResult<number, Error>, showChat: boolean}) => {
 
     const [showInfo, setShowInfo] = useState(false)
-    const {data: interactions} = useGetInteractions()
-    const totalInteractions = interactions ? Number(interactions) : 0
 
-    const nextTree = useMemo(() => {
-        return totalInteractions + (10 - (totalInteractions % 10))
-    }, [interactions])
+    const totalInteractions = interactions.data ? Number(interactions.data) : 0
 
-    const treesPlanted = useMemo(() => {
-        return Math.floor(totalInteractions / 10)
-    }, [interactions])
-
-    const progress = useMemo(() => {
-        return (totalInteractions % 10) * 10
-    }, [interactions])
 
     return (
        
@@ -42,21 +33,57 @@ export const AiInteractions = ({showChat}: {showChat: boolean}) => {
         </div>
     <div className="flex flex-col items-center">
         <span className="font-light">Interações:</span>
-        <span className="font-bold">{totalInteractions}</span>
+        <div className="relative overflow-hidden h-6 w-full flex items-center justify-center">
+            <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                    key={totalInteractions}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="font-bold"
+                >
+                    {totalInteractions}
+                </motion.span>
+            </AnimatePresence>
+        </div>
     </div>
         <div className="flex flex-col items-center">
         <div className="font-light">Próxima Árvore:</div>
         
-        <div className="font-bold">{nextTree}</div>
+        <div className="font-bold">
+            <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                    key={totalInteractions}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="font-bold"
+                >
+                    {totalInteractions + (10 - (totalInteractions % 10))}
+                </motion.span>
+            </AnimatePresence></div>
         <div className="w-full bg-gray-800 h-1 overflow-hidden rounded-full">
-        <div className="bg-primary h-1 font-bold" style={{
-            width: `${progress}%`,
+        <div className="bg-primary h-1 font-bold transition-all duration-300" style={{
+            width: `${(totalInteractions % 10) * 10}%`,
         }}></div>
         </div>
     </div>
         <div className="flex flex-col items-center">
         <div className="font-light">Árvores Plantadas:</div>
-        <div className="font-bold">{treesPlanted}</div>
+        <div className="font-bold"> <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                    key={totalInteractions}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="font-bold"
+                >
+                    { Math.floor(totalInteractions / 10)}
+                </motion.span>
+            </AnimatePresence></div>
     </div>
     
     </div>
