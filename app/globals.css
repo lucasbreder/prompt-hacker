@@ -38,6 +38,7 @@ body {
   background: #4e4e4e;
   border-radius: 3px;
 }
+
 .chat a {
   /* text-decoration: underline; */
   font-weight: 800;
@@ -191,3 +192,8 @@ body {
 .hide-scroll::-webkit-scrollbar {
   display: none;
 }
+
+.scrollbar-width-6 {
+    scrollbar-width: thin; /* or 6px if supported natively later */
+    scrollbar-color: #888 transparent !important;
+  }

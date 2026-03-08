@@ -13,6 +13,8 @@ import { AiChatForm } from "./AiChatForm";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { AiInteractions } from "./AiInteractions";
+import { AiMessages } from "./AiMessages";
 
 export const AiChat = ({
   theme = "dark",
@@ -38,6 +40,7 @@ export const AiChat = ({
   const chat = useRef<HTMLDivElement>(null);
   const iaResponse = useGetOpenAPI(currentUserMessage);
   const router = useRouter();
+  const [totalInteractions, setTotalInteractions] = useState(1470);
 
   const handleLinkClick = useCallback(
     (event: any) => {
@@ -98,11 +101,12 @@ export const AiChat = ({
         className={`fixed left-0 top-0 transition-all duration-500 w-full ${(!showChat) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
       />
        <div
-          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] h-[90%] rounded-t-3xl bg-gradient-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} pb-30 max-h-fit overflow-hidden transition-all duration-500`}
+          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] h-[90%] rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} pb-30 max-h-fit transition-all duration-500 overflow-hidden`}
         style={{
           boxShadow: showChat ? "rgba(255, 255, 255, 0.2) 0px 20px 80px inset" : "",
         }} >
-          {showChat && <div
+         <div>
+           {showChat && <div
             className="cursor-pointer absolute top-5 right-5 w-6 h-6 rounded-full flex items-center justify-center text-sm bg-primary text-black z-20"
             onClick={() => {
               setShowChat(false);
@@ -110,38 +114,10 @@ export const AiChat = ({
           >
             x
           </div>}
-          <div
-            ref={chat}
-            className={`${showChat ? "opacity-100 h-[80%] overflow-auto px-4 pt-20" : "opacity-0 h-0 overflow-hidden"}`}
-          >
-            <AnimatePresence>
-              {messages.map((item, index) => {
-                return (
-                  <motion.div
-                    onClick={handleLinkClick}
-                    initial={{ opacity: 0, left: -10 }}
-                    transition={{ duration: 0.5 }}
-                    animate={{ opacity: 1, left: 0 }}
-                    exit={{ opacity: 0, left: -10 }}
-                    className={`sm:max-w-8/12 w-fit chat rounded-t-2xl ${item.type !== "robot" ? "bg-white text-black rounded-r-2xl py-1 px-4" : "rounded-l-2xl text-white"} mb-3 relative`}
-                    key={index}
-                  >
-                    <Markdown>{item.message}</Markdown>
-                  </motion.div>
-                );
-              })}
-              {iaResponse.isFetching && (
-                <motion.div
-                  className="relative"
-                  initial={{ opacity: 0, left: -10 }}
-                  animate={{ opacity: 1, left: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <span className="loader"></span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+        <div className="w-full h-full flex">
+           <AiMessages messages={messages} showChat={showChat} chat={chat} handleLinkClick={handleLinkClick} iaResponse={iaResponse} />
+          <AiInteractions totalInteractions={totalInteractions} showChat={showChat} />
+        </div>
           {(isFloat || showChat) && <div className={`px-5 pb-5 absolute bottom-5 left-1/2 translate-x-[-50%] w-full pointer-events-auto transition-all duration-500 ${isFixed || showChat ? "opacity-100" : "opacity-0"}`}>
             <AiChatForm
               placeholder={placeholder}
@@ -152,6 +128,8 @@ export const AiChat = ({
               setShowChat={setShowChat}
             />
           </div>}
+         </div>
+         
         </div>
         {!isFloat && <div className="w-full max-w-[300px]"><AiChatForm
               placeholder={placeholder}

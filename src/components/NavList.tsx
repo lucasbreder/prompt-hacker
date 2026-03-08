@@ -47,8 +47,8 @@ export const NavList = ({ nav, variant = "grid", setShowNav }: { nav: NavItem[];
         <p className="text-white flex flex-col justify-center items-center sm:flex-row gap-2 text-center">
           <span className="text-[15px] sm:text-[20px]">Entre em contato via:</span>
           <span className="flex items-center gap-2 text-[12px] sm:text-[20px]">
-            <Link className="flex items-center gap-2" href="#"><Image src="/icons/instagram.svg" width={15} height={15} alt="Instagram" /> @‌xpto</Link> ou
-            <Link className="flex items-center gap-2 relative" href="#" onClick={(e) => { e.preventDefault(); handleCopyClipboard("email@email.com"); }}><Image src="/icons/mail.svg" width={15} height={15} alt="Mail" /> email@email.com<span className={`text-primary absolute -top-5 left-0 bg-black/90 rounded-full px-2 py-1 transition-all duration-300 ${showTooltip ? "opacity-100" : "opacity-0"}`}>e-mail copiado</span></Link>
+            <Link className="flex items-center gap-2" href="http://instagram.com/prompterhacker"><Image src="/icons/instagram.svg" width={15} height={15} alt="Instagram" />@prompterhacker</Link> ou
+            <Link className="flex items-center gap-2 relative" href="#" onClick={(e) => { e.preventDefault(); handleCopyClipboard("furtadoandre@gmail.com"); }}><Image src="/icons/mail.svg" width={15} height={15} alt="Mail" /> furtadoandre@gmail.com<span className={`text-primary absolute -top-5 left-0 bg-black/90 rounded-full px-2 py-1 transition-all duration-300 ${showTooltip ? "opacity-100" : "opacity-0"}`}>e-mail copiado</span></Link>
           </span>
         </p>
       </div>
