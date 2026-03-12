@@ -28,8 +28,6 @@ export const Page = ({
   const [isChatAtBottom, setIsChatAtBottom] = useState(false);
   const chatContainer = useRef<HTMLDivElement>(null);
 
-  console.log(pathname)
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
