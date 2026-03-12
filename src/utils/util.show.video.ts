@@ -1,9 +1,23 @@
   export const videoUrl = (url: string) => {
     switch (url) {
+      case "/projeto":
+        return "/project.mp4";
+      case "/pacto":
+        return "/pacto.mp4";
+      case "/artigo":
+        return "/article.mp4";
+      case "/trabalho-academico":
+        return "/project.mp4";
+      case "trabalho-academico":
+        return "/project.mp4";
       case "projeto":
         return "/project.mp4";
       case "pacto":
         return "/pacto.mp4";
+      case "/prompterhacker.io":
+        return "/article.mp4";
+      case "prompterhacker.io":
+        return "/article.mp4";
       case "artigo":
         return "/article.mp4";
       case "/":

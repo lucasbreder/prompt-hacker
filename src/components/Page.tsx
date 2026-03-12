@@ -28,6 +28,8 @@ export const Page = ({
   const [isChatAtBottom, setIsChatAtBottom] = useState(false);
   const chatContainer = useRef<HTMLDivElement>(null);
 
+  console.log(pathname)
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -53,7 +55,7 @@ export const Page = ({
       <header
         className={`h-150 flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
-          backgroundImage: `url(${thumbnail || art?.url})`,
+          backgroundImage: `url("${thumbnail || art?.url}")`,
         }}
       >
         {!video && <div className="opacity-60 w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}

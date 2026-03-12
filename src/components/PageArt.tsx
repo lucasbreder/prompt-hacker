@@ -37,6 +37,7 @@ export const PageArt = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const chatContainer = useRef<HTMLDivElement>(null);
 
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -62,7 +63,7 @@ export const PageArt = ({
       <header
         className={`h-[60vh] sm:h-[80vh] w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
-          backgroundImage: `url(${art?.url})`,
+          backgroundImage: `url("${art?.url}")`,
         }}
       >
         {!video && <div className="opacity-60 bg-contain sm:bg-auto w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
@@ -89,7 +90,7 @@ export const PageArt = ({
                   </div>
                 </div>}
                 {axis && <div className="text-xl">
-                  <div className="text-secondary font-bold">Eixo</div>
+                  <div className="text-secondary font-bold">Eixos</div>
                   <div className="flex flex-wrap gap-2">
                     {axis.map((item: string, index: number) => (
                       <span key={index} className="font-extralight text-sm px-2 py-1 rounded-full bg-[#FCF9F7] border border-[#EAEAEA]">{item}</span>
