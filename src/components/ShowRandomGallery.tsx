@@ -14,7 +14,7 @@ export const ShowRandomGallery = ({galleryContent}:{galleryContent:ApiResponse<G
     const [randomNumber, setRandomNumber] = useState<number | null>(null)
 
     useEffect(() => {
-        setRandomNumber(Math.floor(Math.random() * 6) + 1)
+        setRandomNumber(3)
     }, [])
 
     if (!randomNumber) {

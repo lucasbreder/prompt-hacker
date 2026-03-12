@@ -58,17 +58,20 @@ export const PageArt = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  console.log(art)
+
   return (
     <>
       <header
-        className={`h-[60vh] sm:h-[80vh] w-auto flex flex-col justify-between p-4 bg-cover bg-fixed bg-blend-luminosity relative overflow-hidden bg-center`}
+        className={`h-[60vh] sm:h-[80vh] w-auto flex flex-col justify-between p-4 ${title === "Sonhando" ? "bg-contain" : "bg-cover bg-fixed"} bg-no-repeat  bg-blend-luminosity relative overflow-hidden bg-center`}
         style={{
           backgroundImage: `url("${art?.url}")`,
         }}
       >
-        {!video && <div className="opacity-60 bg-contain sm:bg-auto w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
-        <div className="bg-linear-to-b from-black/60 to-black/0 w-full h-full mix-blend-multiply absolute top-0 left-0"></div>
-        {video && <VideoBackground videoSrc={video} />}
+
+       {!video && title !== "Sonhando" && <div className="opacity-60 w-full h-full bg-[url('/pattern.jpg')] mix-blend-multiply absolute top-0 left-0"></div>}
+        {title !== "Sonhando" && <div className="bg-linear-to-b from-black/60 to-black/0 w-full h-full mix-blend-multiply absolute top-0 left-0"></div>}
+        {video && title !== "Sonhando" && <VideoBackground videoSrc={video} />}
 
       </header>
       <section className="bg-[#FCF9F7] pb-50">

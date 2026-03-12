@@ -46,7 +46,7 @@ export const NavDetail = ({ nav, variant = "grid", showNavInit = false, showChat
         </div>
         <div>
           <h2 className="text-[20px] leading-6">Linguagem e IA Generativa como Campo de Disputa</h2>
-          <p className="text-white mt-3 text-[14px]">Uma análise profunda da competição entre a linguagem natural e a IA generativa, revelando suas complexidades e o futuro da tecnologia. <br /><Link className="text-primary underline" href="/projeto">{"< "}Leia Mais{" >"}</Link></p>
+          {/* <p className="text-white mt-3 text-[14px]">Uma análise profunda da competição entre a linguagem natural e a IA generativa, revelando suas complexidades e o futuro da tecnologia. <br /><Link className="text-primary underline" href="/projeto">{"< "}Leia Mais{" >"}</Link></p> */}
         </div>
         <NavList nav={nav} variant={variant} setShowNav={setShowNav} />
       </div>
