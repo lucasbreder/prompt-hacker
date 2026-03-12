@@ -218,7 +218,7 @@ export const PageArt = ({
             <div>"{author_note}"</div>
           </div>}
           <div ref={chatContainer} className="relative">
-            <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} />
+            <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} context={`Esse trecho da mensagagem é apenas para saber onde você está localizado no site: ${pathname} Título: ${title} Autor: ${author} Resumo: ${excerpt} Conteúdo: ${content}. Caso surjam pergunta de onde o usuário está o qual é a obra, responda com esse contexto`} />
           </div>
         </div>
 

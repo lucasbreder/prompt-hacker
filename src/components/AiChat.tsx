@@ -24,6 +24,7 @@ export const AiChat = ({
   isFixed = true,
   isAtBottom = false,
   isFloat = true,
+  context = ''
 }: {
   theme?: "dark" | "light";
   placeholder?: string;
@@ -31,6 +32,7 @@ export const AiChat = ({
   isFixed?: boolean;
   isAtBottom?: boolean;
   isFloat?: boolean;
+  context?: string;
 }) => {
   const [messages, setMessages] = useState<{ type: string; message: string }[]>(
     []
@@ -39,7 +41,7 @@ export const AiChat = ({
   const [showChat, setShowChat] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   const chat = useRef<HTMLDivElement>(null);
-  const iaResponse = useGetOpenAPI(currentUserMessage);
+  const iaResponse = useGetOpenAPI(currentUserMessage + context);
   const router = useRouter();
   const pathname = usePathname()
   const interactions = useGetInteractions()

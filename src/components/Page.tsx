@@ -97,7 +97,7 @@ export const Page = ({
 
           </div>
           <div ref={chatContainer} className="relative">
-            <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} />
+            <AiChat theme="light" isFixed={showChatFixed} isAtBottom={isChatAtBottom} context={`Esse trecho da mensagagem é apenas para saber onde você está localizado no site: ${pathname} Título: ${title} Autor: ${author} Resumo: ${excerpt} Conteúdo: ${content}`} />
           </div>
           {showNav && nav && <div className="relative w-full mt-30 mb-10">
             <NavDetail nav={nav.docs} showChat={false} />
