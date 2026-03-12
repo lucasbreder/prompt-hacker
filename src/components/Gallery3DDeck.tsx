@@ -92,6 +92,7 @@ function Card({ url, index, slug, gap, stackHeight, total, sharedYOffset, ...pro
   const ref = useRef<any>(null)
   const router = useRouter()
   const [hovered, hover] = useState(false)
+  const isClickable = useRef(false)
   
   useFrame((state, delta) => {
     if(!ref.current) return
@@ -130,10 +131,16 @@ function Card({ url, index, slug, gap, stackHeight, total, sharedYOffset, ...pro
 
     targetOpacity = Math.max(0, Math.min(1, targetOpacity))
 
+    isClickable.current = targetOpacity > 0
+
     easing.damp(ref.current.material, 'opacity', targetOpacity, 0.2, delta)
     
     // Hover effect
     const hoverScale = hovered ? 2 : 1.8
+    if (!isClickable.current && hovered) {
+      hover(false)
+      document.body.style.cursor = 'default'
+    }
     easing.damp(ref.current.scale, 'x', hoverScale, 0.5, delta)
     easing.damp(ref.current.scale, 'y', hoverScale, 0.5, delta)
 
@@ -150,9 +157,23 @@ function Card({ url, index, slug, gap, stackHeight, total, sharedYOffset, ...pro
         // Inclinação típica de fichário (-15 graus no eixo X)
         rotation={[-0.25, 0, 0]} 
         scale={[1.5, 1]} // Proporção 3:2 (cartão postal)
-        onClick={(e) => { e.stopPropagation(); router.push(`/arte/${slug}`) }}
-        onPointerOver={(e) => { e.stopPropagation(); hover(true); document.body.style.cursor = 'pointer' }}
-        onPointerOut={(e) => { e.stopPropagation(); hover(false); document.body.style.cursor = 'default' }}
+        onClick={(e) => { 
+          if (!isClickable.current) return;
+          e.stopPropagation(); 
+          router.push(`/arte/${slug}`) 
+        }}
+        onPointerOver={(e) => { 
+          if (!isClickable.current) return;
+          e.stopPropagation(); 
+          hover(true); 
+          document.body.style.cursor = 'pointer' 
+        }}
+        onPointerOut={(e) => { 
+          if (!isClickable.current) return;
+          e.stopPropagation(); 
+          hover(false); 
+          document.body.style.cursor = 'default' 
+        }}
         {...props}
     />
   )
