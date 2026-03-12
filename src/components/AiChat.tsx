@@ -12,7 +12,7 @@ import Markdown from "react-markdown";
 import { AiChatForm } from "./AiChatForm";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AiInteractions } from "./AiInteractions";
 import { AiMessages } from "./AiMessages";
 import { useGetInteractions } from "../hooks/getInteractions";
@@ -41,6 +41,7 @@ export const AiChat = ({
   const chat = useRef<HTMLDivElement>(null);
   const iaResponse = useGetOpenAPI(currentUserMessage);
   const router = useRouter();
+  const pathname = usePathname()
   const interactions = useGetInteractions()
 
   const handleLinkClick = useCallback(
@@ -112,11 +113,11 @@ export const AiChat = ({
         className={`fixed left-0 top-0 transition-all duration-500 w-full ${(!showChat) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
       />
        <div
-          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] h-[90%] rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} max-h-fit transition-all duration-500 overflow-hidden`}
+          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] ${pathname === "/" ? "h-[600px]" : "h-[90%]"} rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} max-h-fit transition-all duration-500`}
         style={{
           boxShadow: showChat ? "rgba(255, 255, 255, 0.2) 0px 20px 80px inset" : "",
         }} >
-         <div className="h-full">
+         <div className="h-full relative min-h-[120px]">
            {showChat && <div
             className="cursor-pointer absolute top-5 right-5 w-6 h-6 rounded-full flex items-center justify-center text-sm bg-primary text-black z-20"
             onClick={() => {

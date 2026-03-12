@@ -6,7 +6,7 @@ export const AiMessages = ({messages, showChat, chat, handleLinkClick, iaRespons
     return (
         <div
             ref={chat}
-            className={`${showChat ? "opacity-100 h-[80%] overflow-auto px-4 pt-20" : "opacity-0 h-0 overflow-hidden"} relative basis-full sm:basis-9/12 overflow-auto max-h-130 sm:max-h-150 rounded-3xl scrollbar-width-6`}
+            className={`${showChat ? "opacity-100 h-[calc(100%-20px)] overflow-auto px-4 pt-20" : "opacity-0 h-0 overflow-hidden"} relative basis-full sm:basis-9/12 overflow-auto rounded-3xl scrollbar-width-6`}
           >
             <AnimatePresence>
               {messages.map((item, index) => {
