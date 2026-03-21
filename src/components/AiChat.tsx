@@ -24,7 +24,7 @@ export const AiChat = ({
   isFixed = true,
   isAtBottom = false,
   isFloat = true,
-  context = ''
+  context = "",
 }: {
   theme?: "dark" | "light";
   placeholder?: string;
@@ -35,7 +35,7 @@ export const AiChat = ({
   context?: string;
 }) => {
   const [messages, setMessages] = useState<{ type: string; message: string }[]>(
-    []
+    [],
   );
   const [currentUserMessage, setCurrentUserMessage] = useState("");
   const [showChat, setShowChat] = useState(false);
@@ -43,8 +43,8 @@ export const AiChat = ({
   const chat = useRef<HTMLDivElement>(null);
   const iaResponse = useGetOpenAPI(currentUserMessage + context);
   const router = useRouter();
-  const pathname = usePathname()
-  const interactions = useGetInteractions()
+  const pathname = usePathname();
+  const interactions = useGetInteractions();
 
   const handleLinkClick = useCallback(
     (event: any) => {
@@ -66,7 +66,7 @@ export const AiChat = ({
         }
       }
     },
-    [router]
+    [router],
   );
 
   useEffect(() => {
@@ -74,11 +74,11 @@ export const AiChat = ({
       setMessages((prev) => {
         // Verifica se a resposta já foi adicionada
         const hasRobotResponse = prev.some(
-          (msg) => msg.type === "robot" && msg.message === iaResponse.data
+          (msg) => msg.type === "robot" && msg.message === iaResponse.data,
         );
 
         if (hasRobotResponse) return prev;
-        interactions.refetch()
+        interactions.refetch();
         return [
           ...prev,
           {
@@ -97,7 +97,7 @@ export const AiChat = ({
       if (lastChild) {
         chat.current.scrollTo({
           top: lastChild.offsetTop - 40,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       } else {
         chat.current.scrollTop = chat.current.scrollHeight;
@@ -112,47 +112,65 @@ export const AiChat = ({
   return (
     <>
       <div
-        className={`fixed left-0 top-0 transition-all duration-500 w-full ${(!showChat) ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
+        className={`fixed left-0 top-0 transition-all duration-500 w-full ${!showChat ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} w-full h-full bg-black/70 z-50`}
       />
-       <div
-          className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-[980px] ${pathname === "/" ? "h-[600px]" : "h-[90%]"} rounded-t-3xl bg-linear-to-b ${(!showChat) ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} max-h-fit transition-all duration-500`}
+      <div
+        className={`${isAtBottom && !showChat ? "absolute" : "fixed bottom-0 min-h-100"} z-50 left-0 sm:left-1/2 sm:translate-x-[-50%] w-full max-w-245 ${pathname === "/" ? "h-170" : "h-[90%]"} rounded-t-3xl bg-linear-to-b ${!showChat ? "from-black/0 to-black/0 pointer-events-none" : "from-black/75 to-black opacity-100 pointer-events-auto"} max-h-fit transition-all duration-500`}
         style={{
-          boxShadow: showChat ? "rgba(255, 255, 255, 0.2) 0px 20px 80px inset" : "",
-        }} >
-         <div className="h-full relative min-h-[120px]">
-           {showChat && <div
-            className="cursor-pointer absolute top-5 right-5 w-6 h-6 rounded-full flex items-center justify-center text-sm bg-primary text-black z-20"
-            onClick={() => {
-              setShowChat(false);
-            }}
-          >
-            x
-          </div>}
-        <div className="w-full flex h-[80%]">
-           <AiMessages messages={messages} showChat={showChat} chat={chat} handleLinkClick={handleLinkClick} iaResponse={iaResponse} />
-          <AiInteractions interactions={interactions} showChat={showChat} />
-        </div>
-          {(isFloat || showChat) && <div className={`px-5 pb-5 absolute bottom-5 left-1/2 translate-x-[-50%] w-full pointer-events-auto transition-all duration-500 ${isFixed || showChat ? "opacity-100" : "opacity-0"}`}>
-            <AiChatForm
-              placeholder={placeholder}
-              form={form}
-              setCurrentUserMessage={setCurrentUserMessage}
-              setMessages={setMessages}
-              theme={theme}
-              setShowChat={setShowChat}
+          boxShadow: showChat
+            ? "rgba(255, 255, 255, 0.2) 0px 20px 80px inset"
+            : "",
+        }}
+      >
+        <div className="h-full relative min-h-30">
+          {showChat && (
+            <div
+              className="cursor-pointer absolute top-5 right-5 w-6 h-6 rounded-full flex items-center justify-center text-sm bg-primary text-black z-20"
+              onClick={() => {
+                setShowChat(false);
+              }}
+            >
+              x
+            </div>
+          )}
+          <div className="w-full flex h-[80%] flex-col sm:flex-row">
+            <AiMessages
+              messages={messages}
+              showChat={showChat}
+              chat={chat}
+              handleLinkClick={handleLinkClick}
+              iaResponse={iaResponse}
             />
-          </div>}
-         </div>
-         
+            <AiInteractions interactions={interactions} showChat={showChat} />
+          </div>
+          {(isFloat || showChat) && (
+            <div
+              className={`px-5 pb-5 absolute bottom-5 left-1/2 translate-x-[-50%] w-full pointer-events-auto transition-all duration-500 ${isFixed || showChat ? "opacity-100" : "opacity-0"}`}
+            >
+              <AiChatForm
+                placeholder={placeholder}
+                form={form}
+                setCurrentUserMessage={setCurrentUserMessage}
+                setMessages={setMessages}
+                theme={theme}
+                setShowChat={setShowChat}
+              />
+            </div>
+          )}
         </div>
-        {!isFloat && <div className="w-full max-w-[300px]"><AiChatForm
-              placeholder={placeholder}
-              form={form}
-              setCurrentUserMessage={setCurrentUserMessage}
-              setMessages={setMessages}
-              theme={theme}
-              setShowChat={setShowChat}
-            /></div>}
+      </div>
+      {!isFloat && (
+        <div className="w-full max-w-75">
+          <AiChatForm
+            placeholder={placeholder}
+            form={form}
+            setCurrentUserMessage={setCurrentUserMessage}
+            setMessages={setMessages}
+            theme={theme}
+            setShowChat={setShowChat}
+          />
+        </div>
+      )}
     </>
   );
 };
